@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>tris.rocks</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Font Awesome icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <!-- JetBrains Mono font -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root { --footer-height: 72px; }
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            background: #0b0b0b;
+            font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
+            text-transform: lowercase;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* TEXT CONTAINER */
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .tris { color: #7600f4; }
+        .rocks { color: white; }
+
+        /* CURSOR / CARET */
+        .bar {
+            display: inline-block;
+            width: 3px;
+            height: 1.2em;
+            background: #7600f4;
+            margin-left: 0;
+            vertical-align: text-bottom;
+            opacity: 1;
+        }
+
+        @keyframes blink {
+            0%, 49.999% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .bar.blink {
+            animation: blink 2s steps(2, start) infinite;
+        }
+
+        /* MAIN BUTTON */
+        .main-button {
+            padding: 15px 45px;
+            font-size: 1.1rem;
+            border: 1px solid #7600f4;
+            cursor: pointer;
+            background: #7600f4;
+            color: white;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .main-button:hover {
+            opacity: 0.85;
+            transform: scale(1.03);
+        }
+
+        /* Code holder styles */
+        .code-holder {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #111111;
+            padding: 10px 14px;
+            border-radius: 0;
+            border: 1px solid #7600f4;
+        }
+
+        .code-holder pre {
+            margin: 0;
+            color: #e6e6e6;
+            font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
+            font-size: 0.95rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            padding: 8px 14px;
+            background: #7600f4;
+            color: #fff;
+            border: 1px solid #7600f4;
+            border-radius: 0;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .copy-btn:active { transform: translateY(1px); }
+
+        /* ICON LINKS */
+        .bottom-buttons {
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
+
+        /* Fixed footer container for social icons */
+        .fixed-footer {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            padding: 18px 20px;
+            box-sizing: border-box;
+            border-top: 1px solid #7600f4;
+            background: rgba(0,0,0,0.0);
+            z-index: 1000;
+            height: var(--footer-height);
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .icon-button {
+            color: #7600f4;
+            font-size: 1.8rem;
+            opacity: 0.7;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .icon-button:hover {
+            opacity: 1;
+            transform: scale(1.15);
+        }
+
+        a { text-decoration: none; }
+
+        /* Sections for scroll transitions */
+        .section {
+            position: fixed;
+            inset: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px calc(40px + var(--footer-height));
+            box-sizing: border-box;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            pointer-events: none;
+            background: transparent;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+            z-index: 2;
+        }
+
+        .section:not(.visible) {
+            z-index: 1;
+        }
+
+        .image-container {
+            width: min(1100px, 90%);
+            height: 60vh;
+            background-image: url('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2FUIwQdCyvfNI%2Fmaxresdefault.jpg&f=1&nofb=1&ipt=31de7e471224f14a762b3b79c14da9d90b0005b161cc25f7ecb1e23e9d26bc28');
+            background-size: cover;
+            background-position: center;
+            border-radius: 0;
+            border: 1px solid #7600f4;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            margin-bottom: 28px;
+        }
+
+        /* Background video */
+        #bg-video {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 0;
+            /* Avoid transforms on the video element (can interfere with touch/scroll on mobile) */
+            transform: none;
+            -webkit-transform: none;
+            /* Allow vertical pan gestures to pass through */
+            touch-action: pan-y;
+        }
+
+        .content-header {
+            color: white;
+            font-size: 2.2rem;
+            margin: 8px 0;
+        }
+
+        .content-subtext {
+            color: #bfbfbf;
+            max-width: 900px;
+            text-align: center;
+            line-height: 1.6;
+            font-size: 1.05rem;
+        }
+
+        /* Supported games list */
+        .games-section {
+            margin-top: 22px;
+            width: min(1100px, 95%);
+            /* remove outer outline (we'll use purple outline on cards instead) */
+            border: none;
+            padding: 12px;
+            background: transparent;
+            overflow: visible;
+        }
+        .games-header { color: #fff; font-size: 1.2rem; margin-bottom: 6px; }
+        /* Center the games and allow wrapping so they sit in the middle based on count */
+        .games-list { display: flex; gap: 16px; justify-content: center; align-items: center; flex-wrap: wrap; padding-bottom: 8px; -webkit-overflow-scrolling: touch; }
+
+        /* Thumbnail-style game cards */
+        .game-card {
+            width: 320px;
+            /* allow height to size to content so caption sits below the image */
+            height: auto;
+            /* remove rounding */
+            border-radius: 0;
+            position: relative;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+            /* use the purple outline color for cards */
+            border: 1px solid #7600f4;
+            flex: 0 0 auto;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        /* Image area (no fade). Use contain so whole icon is visible; ensure it's big enough */
+        .game-image {
+            /* original gamebox image area size */
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            background-color: #000;
+            flex: none;
+        }
+        /* Box below the image containing name and status - size to content */
+        .game-caption {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #111111;
+            border-top: 2px solid #7600f4;
+            box-sizing: border-box;
+        }
+        .game-caption .card-name { color: #fff; }
+        .card-name { color: #fff; font-weight: 700; text-shadow: 0 2px 6px rgba(0,0,0,0.6); flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .card-status {
+            /* use an image only for status; remove box/colour styles */
+            padding: 0;
+            border: none;
+            background: transparent;
+            color: transparent;
+            white-space: nowrap;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card-status img { display: block; width: 24px; height: 24px; }
+        .card-status.updated { /* semantic class kept for aria/title only */ }
+        .card-status.outdated { /* semantic class kept for aria/title only */ }
+
+        @media (max-width: 700px) {
+            .games-list { gap: 12px; }
+            .game-card { width: 240px; height: auto; border-radius: 0; }
+            .game-image { height: 140px; }
+            .game-caption { padding: 6px 10px; }
+            .card-name { font-size: 0.95rem; }
+            .card-status { padding: 4px 8px; font-size: 0.85rem; }
+        }
+        .games-actions { display:flex; gap:8px; margin-top:8px; justify-content:flex-end; }
+
+        /* Mobile adjustments */
+        @media (max-width: 700px) {
+            /* On small screens keep everything centered, smaller, and disable scroll */
+            body { overflow: hidden; height: 100vh; }
+            .section {
+                position: fixed;
+                inset: 0;
+                height: 100vh;
+                padding: 20px 12px calc(20px + var(--footer-height));
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            h1 { font-size: 1.6rem; margin-bottom: 18px; letter-spacing: 1px; }
+            .image-container { height: 30vh; width: 92%; border-radius: 0; }
+            .content-header { font-size: 1.2rem; }
+            .content-subtext { font-size: 0.9rem; padding: 0 10px; }
+            .main-button { padding: 10px 22px; font-size: 1rem; }
+            .fixed-footer { padding: 10px 12px; --footer-height: 60px; }
+            :root { --footer-height: 60px; }
+            /* Make sure background video stays behind content on mobile */
+            #bg-video { opacity: 0.45; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SCROLL SECTIONS -->
+    <div class="section hero visible" id="hero">
+        <!-- TYPING TEXT -->
+        <h1 id="typeText">
+            <span id="text"></span><span class="bar"></span>
+        </h1>
+
+        <!-- CODE HOLDER (copyable) -->
+        <div class="code-holder">
+            <pre><code id="code-text">loadstring(game:HttpGet("https://tris.rocks/loader.lua"))();</code></pre>
+            <button class="copy-btn" id="copy-btn" onclick="copyCode()">Copy</button>
+        </div>
+
+        <!-- ICON LINKS removed from hero (moved to fixed footer) -->
+    </div>
+
+    <!-- content section removed per user request -->
+
+    <div class="section" id="games">
+        <h2 class="content-header">Supported Games</h2>
+        <div class="games-section" id="games-section" aria-live="polite">
+            <div class="games-list" id="games-list" role="list" aria-label="Supported games">Loading...</div>
+        </div>
+    </div>
+
+    <div class="fixed-footer" aria-hidden="false">
+        <div class="bottom-buttons">
+            <a href="https://discord.gg/QwDRmQGXhZ" target="_blank" class="icon-button" aria-label="Discord">
+                <i class="fa-brands fa-discord"></i>
+            </a>
+            <a href="https://youtube.com/YOUR_CHANNEL" target="_blank" class="icon-button" aria-label="YouTube">
+                <i class="fa-brands fa-youtube"></i>
+            </a>
+        </div>
+    </div>
+    <!-- Background video element (muted, plays short random snippets) -->
+    <video id="bg-video" muted playsinline preload="auto" aria-hidden="true"></video>
+    <!-- Background audio (MP3) -->
+    <audio id="bg-audio" preload="auto"></audio>
+
+    <script>
+        const text = "tris.rocks";
+        const speed = 120;
+
+        const container = document.getElementById("typeText");
+        const output = document.getElementById("text");
+
+        let i = 0;
+
+        function type() {
+            if (i < text.length) {
+                const c = text[i];
+
+                if (i < 4) {
+                    output.innerHTML += `<span class="tris">${c}</span>`;
+                } else {
+                    output.innerHTML += `<span class="rocks">${c}</span>`;
+                }
+
+                i++;
+                setTimeout(type, speed);
+            } else {
+                const bar = document.querySelector('.bar');
+                if (bar) bar.classList.add('blink');
+            }
+        }
+
+        type();
+
+        function redirectMain() {
+            window.location.href = "https://example.com";
+        }
+
+        // Copy code to clipboard
+        function copyCode() {
+            const el = document.getElementById('code-text');
+            if (!el) return;
+            const text = el.innerText || el.textContent;
+            if (!navigator.clipboard) {
+                // fallback
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
+                try { document.execCommand('copy'); } catch (e) {}
+                ta.remove();
+                showCopyFeedback();
+                return;
+            }
+            navigator.clipboard.writeText(text).then(showCopyFeedback).catch(() => {
+                showCopyFeedback();
+            });
+        }
+
+        function showCopyFeedback() {
+            const btn = document.getElementById('copy-btn');
+            if (!btn) return;
+            const orig = btn.innerText;
+            btn.innerText = 'Copied!';
+            setTimeout(() => { btn.innerText = orig; }, 1400);
+        }
+
+        // Supported games list - use local games.json for metadata and rendering
+        (function() {
+            const container = document.getElementById('games-list');
+
+            async function render() {
+                if (!container) return;
+                container.innerHTML = '';
+
+                try {
+                    const resp = await fetch('https://raw.githubusercontent.com/trissploit/trisrocks.github.io/refs/heads/main/games.json', { cache: 'no-cache' });
+                    if (!resp.ok) throw new Error('Failed to load games.json');
+                    const games = await resp.json();
+
+                    if (!Array.isArray(games) || games.length === 0) {
+                        container.textContent = 'No games available.';
+                        return;
+                    }
+
+                    for (const g of games) {
+                        const name = g.name || 'Unknown Game';
+                        const icon = g.icon || '';
+                        const updated = Boolean(g.updated);
+                        const link = g.link || '#';
+
+                        const card = document.createElement('a');
+                        card.className = 'game-card';
+                        card.href = link;
+                        card.target = '_blank';
+                        card.rel = 'noopener noreferrer';
+
+                        // create image container
+                        const imageDiv = document.createElement('div');
+                        imageDiv.className = 'game-image';
+                        if (icon) {
+                            imageDiv.style.backgroundImage = `url('${icon.replace(/'/g, "\\'")}')`;
+                        } else {
+                            imageDiv.style.background = 'linear-gradient(180deg, #111 0%, #0b0b0b 100%)';
+                            const placeholder = document.createElement('div');
+                            placeholder.style.position = 'absolute';
+                            placeholder.style.left = '50%';
+                            placeholder.style.top = '50%';
+                            placeholder.style.transform = 'translate(-50%, -50%)';
+                            placeholder.style.opacity = '0.9';
+                            placeholder.style.color = '#7600f4';
+                            placeholder.style.fontSize = '40px';
+                            placeholder.style.pointerEvents = 'none';
+                            placeholder.innerHTML = '<i class="fa-solid fa-gamepad"></i>';
+                            imageDiv.appendChild(placeholder);
+                        }
+
+                        // caption box below image
+                        const caption = document.createElement('div'); caption.className = 'game-caption';
+                        const label = document.createElement('div'); label.className = 'card-name'; label.textContent = name;
+                        const status = document.createElement('div');
+                        status.className = 'card-status ' + (updated ? 'updated' : 'outdated');
+                        status.setAttribute('aria-label', updated ? 'Updated' : 'Outdated');
+                        status.title = updated ? 'Updated' : 'Outdated';
+                        const updatedSvg = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM3NjAwZjQiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWNpcmNsZS1jaGVjay1pY29uIGx1Y2lkZS1jaXJjbGUtY2hlY2siPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjEwIi8+PHBhdGggZD0ibTkgMTIgMiAyIDQtNCIvPjwvc3ZnPg==';
+                        const outdatedSvg = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZjAwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWNpcmNsZS14LWljb24gbHVjaWRlLWNpcmNsZS14Ij48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSIxMCIvPjxwYXRoIGQ9Im0xNSA5LTYgNiIvPjxwYXRoIGQ9Im05IDkgNiA2Ii8+PC9zdmc+';
+                        const img = document.createElement('img');
+                        img.alt = updated ? 'Updated' : 'Outdated';
+                        img.src = updated ? updatedSvg : outdatedSvg;
+                        status.appendChild(img);
+
+                        caption.appendChild(label);
+                        caption.appendChild(status);
+
+                        card.appendChild(imageDiv);
+                        card.appendChild(caption);
+                        container.appendChild(card);
+                    }
+                } catch (e) {
+                    container.textContent = 'Failed to load games.';
+                    console.error('Error loading games.json', e);
+                }
+            }
+
+            render();
+        })();
+
+        // Background audio shuffling multiple MP3s
+        (function() {
+            const songs = [
+                'https://cdn.discordapp.com/attachments/1461091787962847413/1461120632208101440/So_Damn_Fucked_Up.mp3?ex=69696621&is=696814a1&hm=82d1013026183a22a29d8872ee8c7049e2d218dea6ecc2b7db9193cfe37332e4&',
+                'https://cdn.discordapp.com/attachments/1461091787962847413/1461123077663621312/Hate_Bein_Sober.mp3?ex=69696868&is=696816e8&hm=c2835ede9247d4d5d9cdc88b635016a44380e51cd88152db2ab2e9be1ac24dff&',
+                'https://cdn.discordapp.com/attachments/1461091787962847413/1461123785309819004/Lean_Chronicles_feat._Leewayy.mp3?ex=69696910&is=69681790&hm=3b6ace8dab77ed769151d5fe8a0dbec3e281ab1e06ba57d126fd20e247333341&'
+            ];
+
+            const audio = document.getElementById('bg-audio');
+            if (!audio) return;
+            audio.volume = 0.5;
+
+            let queue = [];
+            let lastPlayed = null;
+
+            function shuffle(a) {
+                for (let i = a.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [a[i], a[j]] = [a[j], a[i]];
+                }
+                return a;
+            }
+
+            function refillQueue() {
+                queue = shuffle(songs.slice());
+                // avoid immediate repeat
+                if (lastPlayed && queue.length > 1 && queue[0] === lastPlayed) {
+                    queue.push(queue.shift());
+                }
+            }
+
+            function playNextSong() {
+                if (queue.length === 0) refillQueue();
+                const src = queue.shift();
+                lastPlayed = src;
+                audio.src = src;
+                audio.load();
+                audio.play().catch(() => {
+                    // fallback to muted
+                    audio.muted = true;
+                    audio.play().catch(() => {});
+                });
+            }
+
+            // Play next song when current ends
+            audio.addEventListener('ended', playNextSong);
+
+            // Start with first song
+            playNextSong();
+
+            // On first user interaction, unmute and play
+            function unlockAudio() {
+                try {
+                    audio.muted = false;
+                    audio.play();
+                } catch (e) {}
+                window.removeEventListener('click', unlockAudio);
+                window.removeEventListener('touchstart', unlockAudio);
+            }
+            window.addEventListener('click', unlockAudio, { passive: true });
+            window.addEventListener('touchstart', unlockAudio, { passive: true });
+        })();
+
+        // Background video snippets: play random short clips at 2x speed (max 6s each)
+        (function() {
+            const clips = [
+                'https://cdn.discordapp.com/attachments/1461091787962847413/1461091943156285642/getbusy.mp4?ex=69694b69&is=6967f9e9&hm=c7920d79a393feb89eb39f5f550f90d69e43d4d21bf4839c6699e0bb462d1782&',
+                'https://cdn.discordapp.com/attachments/1461091787962847413/1461091947740397905/therace.mp4?ex=69694b6a&is=6967f9ea&hm=0ada5ea868a115a1b66e44a44ff28462626f06ea58d12603986014e532900fe8&',
+                'https://cdn.discordapp.com/attachments/1461091787962847413/1461092006024577206/lovesosa.mp4?ex=69694b78&is=6967f9f8&hm=b767d41350d9309b5543f9b07899b1e7ec69542c0f937dd975a4cf1f174b0afc&',
+                'https://cdn.discordapp.com/attachments/1461091787962847413/1461094563962945760/vet.mp4?ex=69694dd9&is=6967fc59&hm=a8d10da19036a63ffcb58e8814aac2c9c80d6fb9a54e253c5ee6488ca66a73be&'
+            ];
+
+            const video = document.getElementById('bg-video');
+            if (!video) return;
+            video.muted = true;
+            video.playbackRate = 2.0;
+            video.preload = 'auto';
+
+            let playTimeout = null;
+            let nextTimeout = null;
+            let currentBlobUrl = null;
+
+            function clearTimers() {
+                if (playTimeout) { clearTimeout(playTimeout); playTimeout = null; }
+                if (nextTimeout) { clearTimeout(nextTimeout); nextTimeout = null; }
+            }
+
+            // Shuffle queue to ensure random order and no immediate repeats
+            function shuffle(a) {
+                for (let i = a.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [a[i], a[j]] = [a[j], a[i]];
+                }
+                return a;
+            }
+
+            let queue = [];
+            let lastPlayed = null;
+            function refillQueue() {
+                queue = shuffle(clips.slice());
+                // avoid immediate repeat
+                if (lastPlayed && queue.length > 1 && queue[0] === lastPlayed) {
+                    // move first to end
+                    queue.push(queue.shift());
+                }
+            }
+
+            function playRandomSnippet() {
+                clearTimers();
+                if (queue.length === 0) refillQueue();
+                const src = queue.shift();
+                lastPlayed = src;
+                // revoke previous blob URL
+                if (currentBlobUrl) {
+                    try { URL.revokeObjectURL(currentBlobUrl); } catch (e) {}
+                    currentBlobUrl = null;
+                }
+
+                // Try to fetch clip as a blob first (works around Safari download prompts)
+                fetch(src, { mode: 'cors' }).then(resp => {
+                    if (!resp.ok) throw new Error('network');
+                    return resp.blob();
+                }).then(blob => {
+                    try {
+                        currentBlobUrl = URL.createObjectURL(blob);
+                        video.src = currentBlobUrl;
+                        video.load();
+                    } catch (e) {
+                        // fallback to direct src
+                        video.src = src;
+                        video.load();
+                    }
+                }).catch(() => {
+                    // network/blob fetch failed — fallback to assigning src directly
+                    video.src = src;
+                    video.load();
+                });
+
+                const handleMeta = function() {
+                    // duration may be NaN for streaming or unsupported types; guard
+                    const dur = isFinite(video.duration) ? video.duration : 0;
+                    // We must skip the first 5 seconds and last 10 seconds.
+                    // Also ensure there's enough room to play the required video time at current playbackRate.
+                    const requiredWallMs = 20000; // 20s wall time
+                    const requiredVideoSeconds = video.playbackRate * (requiredWallMs / 1000);
+                    const earliestStart = 5; // skip first 5s
+                    const latestAllowedStart = dur - 10 - requiredVideoSeconds; // ensure skip last 10s
+
+                    if (dur > 0 && latestAllowedStart >= earliestStart) {
+                        const start = earliestStart + Math.random() * (latestAllowedStart - earliestStart);
+                        try { video.currentTime = start; } catch (e) {}
+                    } else {
+                        // Clip too short to satisfy constraints: schedule next
+                        try { if (currentBlobUrl) { URL.revokeObjectURL(currentBlobUrl); currentBlobUrl = null; } } catch (e) {}
+                        nextTimeout = setTimeout(playRandomSnippet, 300);
+                    }
+                };
+
+                const handleSeeked = function() {
+                    video.playbackRate = 2.0;
+                    // attempt to play muted (browsers allow muted autoplay)
+                    video.play().catch(() => {});
+
+                    // Force play for full 20000ms (wall time)
+                    const playMs = 20000;
+
+                    playTimeout = setTimeout(() => {
+                        try { video.pause(); } catch (e) {}
+                        // short gap before next snippet
+                            const gap = 150 + Math.random() * 850;
+                            // schedule revoke of blob URL a little later to free memory
+                            if (currentBlobUrl) {
+                                setTimeout(() => { try { URL.revokeObjectURL(currentBlobUrl); } catch (e) {} currentBlobUrl = null; }, 10000);
+                            }
+                            nextTimeout = setTimeout(playRandomSnippet, gap);
+                    }, playMs);
+                };
+
+                const handleError = function() {
+                    // try next clip shortly if this fails
+                    if (currentBlobUrl) { try { URL.revokeObjectURL(currentBlobUrl); } catch (e) {} currentBlobUrl = null; }
+                    nextTimeout = setTimeout(playRandomSnippet, 500 + Math.random() * 1000);
+                };
+
+                video.removeEventListener('loadedmetadata', handleMeta);
+                video.removeEventListener('seeked', handleSeeked);
+                video.removeEventListener('error', handleError);
+
+                video.addEventListener('loadedmetadata', handleMeta, { once: true });
+                video.addEventListener('seeked', handleSeeked, { once: true });
+                video.addEventListener('error', handleError, { once: true });
+                // If the clip ends before our 6s window, immediately schedule next
+                video.addEventListener('ended', function onend() {
+                    clearTimers();
+                    if (currentBlobUrl) { try { URL.revokeObjectURL(currentBlobUrl); } catch (e) {} currentBlobUrl = null; }
+                    nextTimeout = setTimeout(playRandomSnippet, 200 + Math.random() * 800);
+                    video.removeEventListener('ended', onend);
+                });
+            }
+
+            // Start muted autoplay; browsers typically allow muted playback
+            playRandomSnippet();
+
+            // Optional: if user interacts, ensure video still muted/unmuted policy
+            function unlock() {
+                try { video.muted = true; video.play(); } catch (e) {}
+                window.removeEventListener('click', unlock);
+                window.removeEventListener('touchstart', unlock);
+            }
+            window.addEventListener('click', unlock, { passive: true });
+            window.addEventListener('touchstart', unlock, { passive: true });
+        })();
+
+        // Swap sections on wheel/touch without scrolling the page
+        (function() {
+            const sections = Array.from(document.querySelectorAll('.section'));
+            let current = 0;
+
+            function show(idx) {
+                current = Math.max(0, Math.min(idx, sections.length - 1));
+                sections.forEach((s, i) => {
+                    if (i === current) {
+                        s.classList.add('visible');
+                    } else {
+                        s.classList.remove('visible');
+                    }
+                });
+            }
+
+            show(0);
+
+            let locked = false;
+            function go(delta) {
+                if (locked) return;
+                if (delta > 0 && current < sections.length - 1) {
+                    show(current + 1);
+                    locked = true;
+                    setTimeout(() => locked = false, 700);
+                } else if (delta < 0 && current > 0) {
+                    show(current - 1);
+                    locked = true;
+                    setTimeout(() => locked = false, 700);
+                }
+            }
+
+            // Only enable wheel/keyboard swapping on larger screens (desktop behavior)
+            if (window.innerWidth > 700) {
+                window.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    go(e.deltaY);
+                }, { passive: false });
+            }
+
+            // Touch support for swipe (enable on mobile and touch devices)
+            let ts = 0;
+            window.addEventListener('touchstart', (e) => { ts = e.touches[0].clientY; }, { passive: true });
+            window.addEventListener('touchend', (e) => {
+                const te = e.changedTouches[0].clientY;
+                const diff = ts - te;
+                if (Math.abs(diff) > 40) go(diff);
+            }, { passive: true });
+
+            // Keyboard arrows
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowDown') { e.preventDefault(); go(1); }
+                if (e.key === 'ArrowUp') { e.preventDefault(); go(-1); }
+            }, { passive: false });
+        })();
+    </script>
+
+</body>
+</html>
