@@ -38,6 +38,19 @@
         .tris { color: #7600f4; }
         .rocks { color: white; }
 
+        /* persistent glow for the 'tris' text; hover strengthens it */
+        .tris {
+            color: #7600f4;
+            text-shadow: 0 0 10px rgba(118,0,244,0.65), 0 0 24px rgba(118,0,244,0.18);
+            transition: text-shadow 220ms ease, transform 180ms ease;
+            will-change: text-shadow, transform;
+        }
+        .tris:hover {
+            text-shadow: 0 0 18px rgba(118,0,244,0.95), 0 0 40px rgba(118,0,244,0.35);
+            transform: translateZ(0);
+            cursor: default;
+        }
+
         /* CURSOR / CARET */
         .bar {
             display: inline-block;
@@ -47,6 +60,10 @@
             margin-left: 0;
             vertical-align: text-bottom;
             opacity: 1;
+            /* subtle persistent purple glow for the caret */
+            box-shadow: 0 0 10px rgba(118,0,244,0.75), 0 0 24px rgba(118,0,244,0.18), 0 0 0 4px rgba(118,0,244,0.08);
+            transition: box-shadow 220ms ease, transform 180ms ease;
+            will-change: box-shadow, transform;
         }
 
         @keyframes blink {
@@ -82,7 +99,9 @@
             background: #111111;
             padding: 10px 14px;
             border-radius: 0;
-            border: 1px solid #7600f4;
+            border: 1px solid rgba(118,0,244,0.22);
+            box-shadow: 0 8px 30px rgba(118,0,244,0.08);
+            transition: box-shadow 220ms ease, border-color 180ms ease, transform 180ms ease;
         }
 
         .code-holder pre {
@@ -96,15 +115,33 @@
 
         .copy-btn {
             padding: 8px 14px;
-            background: #7600f4;
+            background: rgba(118,0,244,0.06);
             color: #fff;
-            border: 1px solid #7600f4;
+            border: 1px solid rgba(118,0,244,0.20);
             border-radius: 0;
             cursor: pointer;
-            transition: background 0.15s ease;
+            transition: background 0.15s ease, box-shadow 160ms ease, transform 160ms ease, border-color 160ms ease;
+            /* match site font exactly */
+            font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
+            font-weight: 700;
+            text-transform: none;
+            box-shadow: 0 8px 30px rgba(118,0,244,0.08);
         }
 
+        .copy-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 14px 40px rgba(118,0,244,0.22); border-color: rgba(118,0,244,0.95); background: linear-gradient(90deg, rgba(118,0,244,0.14), rgba(118,0,244,0.06)); }
         .copy-btn:active { transform: translateY(1px); }
+        .copy-btn:focus-visible { outline: none; box-shadow: 0 18px 48px rgba(118,0,244,0.28); border-color: rgba(118,0,244,0.95); }
+
+        .code-holder:hover, .code-holder:focus-within { box-shadow: 0 18px 48px rgba(118,0,244,0.16); border-color: rgba(118,0,244,0.95); }
+
+        /* When hovering the script area, make the Copy button match the outline color/glow */
+        .code-holder:hover .copy-btn,
+        .code-holder:focus-within .copy-btn {
+            background: linear-gradient(90deg, rgba(118,0,244,0.14), rgba(118,0,244,0.06));
+            border-color: rgba(118,0,244,0.85);
+            box-shadow: 0 14px 40px rgba(118,0,244,0.22);
+            transform: translateY(-2px) scale(1.02);
+        }
 
         /* ICON LINKS */
         .bottom-buttons {
@@ -163,6 +200,38 @@
             background: transparent;
         }
 
+        /* Page indicator dots (left side) */
+        #page-dots {
+            position: fixed;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 1200;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .page-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: transform 220ms cubic-bezier(.2,.9,.2,1), box-shadow 220ms ease, background 220ms ease;
+            cursor: pointer;
+        }
+        .page-dot.active {
+            transform: scale(1.45);
+            background: #7600f4;
+            box-shadow: 0 0 12px rgba(118,0,244,0.95), 0 0 28px rgba(118,0,244,0.22);
+            border-color: rgba(118,0,244,0.6);
+        }
+
+        @media (max-width: 700px) {
+            #page-dots { display: none; }
+        }
+
         .section.visible {
             opacity: 1;
             transform: translateY(0);
@@ -195,7 +264,7 @@
             object-fit: cover;
             opacity: 0.5;
             pointer-events: none;
-            z-index: 0;
+            z-index: -1;
             /* Avoid transforms on the video element (can interfere with touch/scroll on mobile) */
             transform: none;
             -webkit-transform: none;
@@ -217,6 +286,59 @@
             font-size: 1.05rem;
         }
 
+        /* Subtitle under main header (cycles game names) */
+        .subtitle {
+            margin-top: 12px;
+            color: #bfbfbf;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(6px);
+            animation: subtitleIn 600ms cubic-bezier(.2,.9,.2,1) forwards;
+            /* reserve space so changing names don't cause layout jumps */
+            min-width: 20ch;
+        }
+
+        .subtitle-prefix { color: #bfbfbf; font-size: 0.95rem; }
+
+        .subtitle-game {
+            color: #7600f4;
+            font-weight: 700;
+            display: inline-block;
+            will-change: transform, opacity;
+            transition: transform 260ms cubic-bezier(.2,.9,.2,1), opacity 260ms ease, font-size 220ms ease;
+            text-align: left;
+            /* allow smoother visual sizing when text length changes */
+            min-width: 14ch;
+            /* subtle persistent glow for the game name */
+            text-shadow: 0 0 12px rgba(118,0,244,0.75), 0 0 30px rgba(118,0,244,0.18);
+        }
+
+        @keyframes subtitleIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Animation applied when a game name cycles in/out */
+        .subtitle-game.cycle {
+            animation: gameCycle 2400ms cubic-bezier(.2,.9,.2,1) both;
+        }
+
+        @keyframes gameCycle {
+            0%   { opacity: 0; transform: translateY(8px) scale(.98); }
+            15%  { opacity: 1; transform: translateY(0) scale(1); }
+            80%  { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-8px) scale(.98); }
+        }
+
+        @keyframes squiggleMove {
+            0% { transform: translateX(-6px) scaleX(1); opacity: 0.92; filter: blur(4px); }
+            50% { transform: translateX(6px) scaleX(1.02); opacity: 1; filter: blur(3px); }
+            100% { transform: translateX(-6px) scaleX(1); opacity: 0.92; filter: blur(4px); }
+        }
+
         /* Supported games list */
         .games-section {
             margin-top: 22px;
@@ -226,6 +348,44 @@
             padding: 12px;
             background: transparent;
             overflow: visible;
+        }
+        .games-note {
+            color: #bfbfbf;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.95rem;
+            opacity: 0.95;
+        }
+        .games-note .squiggle {
+            position: relative;
+            display: inline-block;
+            text-decoration: underline wavy #7600f4;
+            /* slightly thinner underline so the crest appears shorter */
+            text-decoration-thickness: 2px;
+            text-decoration-skip-ink: none;
+            padding-bottom: 1px;
+            /* subtle purple glow on the word */
+            text-shadow: 0 0 8px rgba(118,0,244,0.88), 0 0 18px rgba(118,0,244,0.18);
+        }
+        .games-note .squiggle::after {
+            content: '';
+            position: absolute;
+            /* tighten the ends so crest is shorter */
+            left: -4px;
+            right: -4px;
+            bottom: -3px;
+            height: 6px;
+            pointer-events: none;
+            /* reduce blur and increase rounding for a smooth rounded end */
+            filter: blur(4px);
+            background: rgba(118,0,244,0.30);
+            border-radius: 999px;
+            opacity: 0.95;
+            mix-blend-mode: screen;
+            will-change: transform, opacity, filter;
+            /* smooth left-to-right motion */
+            transform: translateX(-6px);
+            animation: squiggleMove 3.2s cubic-bezier(.2,.8,.2,1) infinite;
         }
         .games-header { color: #fff; font-size: 1.2rem; margin-bottom: 6px; }
         /* Center the games and allow wrapping so they sit in the middle based on count */
@@ -246,6 +406,19 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            transform-origin: center;
+            transition: transform 220ms cubic-bezier(.2,.9,.2,1), box-shadow 220ms ease, border-color 220ms ease;
+        }
+        .game-card:hover {
+            transform: scale(1.035);
+            box-shadow: 0 18px 34px rgba(118,0,244,0.18), 0 6px 18px rgba(0,0,0,0.6);
+            border-color: rgba(118,0,244,0.95);
+        }
+        .game-card:active { transform: scale(1.02); }
+        .game-card:focus-visible {
+            outline: none;
+            box-shadow: 0 12px 30px rgba(118,0,244,0.16);
+            border-color: rgba(118,0,244,0.95);
         }
         /* Image area (no fade). Use contain so whole icon is visible; ensure it's big enough */
         .game-image {
@@ -322,6 +495,119 @@
             /* Make sure background video stays behind content on mobile */
             #bg-video { opacity: 0.45; }
         }
+        /* Top-right buttons: Documentation and Key System */
+        #top-right-buttons {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            z-index: 1400;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .top-btn {
+            padding: 8px 12px;
+            font-size: 0.95rem;
+            color: #fff;
+            background: rgba(118,0,244,0.06);
+            border: 1px solid rgba(118,0,244,0.20);
+            border-radius: 0;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 160ms cubic-bezier(.2,.9,.2,1), box-shadow 160ms ease, background 160ms ease;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+            font-weight: 700;
+        }
+        .top-btn:active { transform: translateY(1px); }
+
+        /* The Key System button glows purple */
+        .top-btn.glow {
+            background: linear-gradient(90deg, rgba(118,0,244,0.14), rgba(118,0,244,0.06));
+            border-color: rgba(118,0,244,0.85);
+            box-shadow: 0 10px 34px rgba(118,0,244,0.22), 0 0 20px rgba(118,0,244,0.55);
+            text-shadow: 0 0 8px rgba(118,0,244,0.55);
+            border-radius: 0;
+        }
+        .top-btn:hover { transform: translateY(-2px) scale(1.02); }
+
+        @media (max-width: 560px) {
+            #top-right-buttons { display: none; }
+        }
+        /* Game details modal (glass-like) */
+        @keyframes modalPop {
+            from { opacity: 0; transform: translateY(12px) scale(0.985); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .game-modal { display: none; position: fixed; inset: 0; z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
+        .game-modal.visible { display: flex; }
+        .modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.55); }
+        .modal-card {
+            position: relative;
+            width: min(1000px, 96%);
+            max-width: 1120px;
+            background: rgba(18,18,18,0.65);
+            border: 1px solid rgba(118,0,244,0.14);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 10px 36px rgba(118,0,244,0.06);
+            backdrop-filter: blur(10px) saturate(130%);
+            display: flex;
+            gap: 20px;
+            padding: 20px 20px 64px 20px;
+            border-radius: 8px;
+            box-sizing: border-box;
+            color: #fff;
+            align-items: flex-start;
+            animation: modalPop 320ms cubic-bezier(.2,.9,.2,1);
+            transform-origin: center center;
+        }
+        .modal-close {
+            position: absolute; right: 12px; top: 12px; background: transparent; border: 1px solid rgba(255,255,255,0.04);
+            color: #fff; font-size: 16px; cursor: pointer; padding:6px 8px; border-radius:0; transition: transform 160ms ease, box-shadow 160ms ease; z-index:5;
+        }
+        .modal-close:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(118,0,244,0.12); }
+        .modal-thumb { width: 420px; height: 260px; background-size: cover; background-position: center; border: 1px solid rgba(118,0,244,0.16); flex: 0 0 auto; }
+        .modal-content { display:flex; flex-direction:column; gap:12px; align-items:flex-start; justify-content:flex-start; padding-right:6px; width: 100%; }
+        .modal-title { margin: 0; font-size: 1.35rem; color: #fff; }
+        .modal-status { font-size: 0.95rem; color: #bfbfbf; }
+        .modal-features { display:flex; gap:8px; flex-wrap:wrap; }
+        .modal-features .feature { background: rgba(118,0,244,0.08); border: 1px solid rgba(118,0,244,0.16); padding:6px 10px; border-radius:3px; color:#eae6ff; font-weight:700; }
+        /* Make the Join button behave/animate like the top-right buttons, and pin to bottom-right */
+        .modal-join {
+            position: absolute; right: 18px; bottom: 18px; display: inline-flex; gap: 8px; align-items: center; justify-content: center;
+            padding: 10px 14px; background: linear-gradient(90deg, rgba(118,0,244,0.14), rgba(118,0,244,0.06));
+            border: 1px solid rgba(118,0,244,0.9); color:#fff; text-decoration:none; border-radius:0; font-weight:700; cursor:pointer;
+            transition: transform 160ms cubic-bezier(.2,.9,.2,1), box-shadow 160ms ease, background 160ms ease; box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+        }
+        .modal-join:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 34px rgba(118,0,244,0.22), 0 0 20px rgba(118,0,244,0.35); }
+        .modal-join:active { transform: translateY(1px); }
+
+        @media (max-width: 720px) {
+            .modal-card { flex-direction: column; align-items: center; padding-bottom: 22px; }
+            .modal-thumb { width: 92%; height: 160px; }
+            .modal-content { align-items: center; text-align: center; }
+            .modal-join { position: static; margin-top: 8px; }
+        }
+        /* FAQ page styles */
+        .faq-title { font-size: 1.8rem; color: #fff; text-transform: lowercase; line-height: 1.05; }
+        .faq-frame { width: 100%; display: flex; align-items: center; justify-content: center; position: relative; flex-direction: column; gap: 12px; }
+        .faq-list { width: min(920px, 86%); color: #bfbfbf; display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+        .faq-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(118,0,244,0.08); padding: 0; border-radius: 4px; overflow: hidden; }
+        .faq-question { color: #fff; font-weight: 700; width: 100%; text-align: left; background: transparent; border: 0; padding: 14px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; cursor: pointer; font-family: inherit; font-size: 1rem; }
+        .faq-question:focus { outline: none; box-shadow: 0 6px 24px rgba(118,0,244,0.12); }
+        .faq-q-text { flex: 1 1 auto; text-align: left; }
+        .faq-arrow { flex: 0 0 20px; display:inline-block; transform-origin: 50% 50%; transition: transform 260ms cubic-bezier(.2,.9,.2,1); color: #bfbfbf; }
+        .faq-answer { color: #bfbfbf; padding: 0 16px; font-size: 0.95rem; line-height: 1.4; max-height: 0; overflow: hidden; opacity: 0; transition: max-height 300ms ease, opacity 220ms ease; }
+        .faq-item.open .faq-answer { opacity: 1; }
+        .faq-item.open .faq-arrow { transform: rotate(90deg); color: #fff; }
+        @media (max-width: 1024px) { .faq-list { width: 92%; } }
+        @media (max-width: 720px) {
+            .faq-list { width: 92%; }
+            .faq-title { font-size: 1.15rem; }
+        }
     </style>
 </head>
 <body>
@@ -331,9 +617,15 @@
         <!-- TYPING TEXT -->
         <h1 id="typeText">
             <span id="text"></span><span class="bar"></span>
+            <!-- Subtitle that cycles game names (moved inside header to sit directly below) -->
+            <div id="subtitle" class="subtitle" aria-hidden="false">
+                <span class="subtitle-prefix">for</span>
+                <span id="gameName" class="tris subtitle-game">Jujutsu Shenanigans</span>
+            </div>
         </h1>
 
         <!-- CODE HOLDER (copyable) -->
+
         <div class="code-holder">
             <pre><code id="code-text">loadstring(game:HttpGet("https://tris.rocks/loader.lua"))();</code></pre>
             <button class="copy-btn" id="copy-btn" onclick="copyCode()">Copy</button>
@@ -342,12 +634,60 @@
         <!-- ICON LINKS removed from hero (moved to fixed footer) -->
     </div>
 
+    <!-- Top-right quick actions -->
+    <div id="top-right-buttons" aria-hidden="false">
+        <a href="#information" class="top-btn" role="button" aria-label="Information">Information</a>
+        <a href="#key-system" class="top-btn glow" role="button" aria-label="Key System">Key System</a>
+    </div>
+
     <!-- content section removed per user request -->
 
     <div class="section" id="games">
         <h2 class="content-header">Supported Games</h2>
         <div class="games-section" id="games-section" aria-live="polite">
             <div class="games-list" id="games-list" role="list" aria-label="Supported games">Loading...</div>
+            <div class="games-note" aria-hidden="true">and works <span class="squiggle">universally</span></div>
+        </div>
+    </div>
+
+    <div class="section" id="esp">
+        <h2 class="content-header faq-title">FAQ</h2>
+        <div class="games-section" aria-live="polite">
+            <div class="faq-frame">
+                <div class="faq-list" role="list">
+                    <div class="faq-item" role="listitem">
+                        <button class="faq-question" aria-expanded="false">
+                            <span class="faq-q-text">How do I get a key?</span>
+                            <span class="faq-arrow" aria-hidden="true">▸</span>
+                        </button>
+                        <div class="faq-answer" aria-hidden="true">You can get a key by copying the key system link from the loader, or by pressing the "Key System" button in the top-right.</div>
+                    </div>
+
+                    <div class="faq-item" role="listitem">
+                        <button class="faq-question" aria-expanded="false">
+                            <span class="faq-q-text">How can I report bugs?</span>
+                            <span class="faq-arrow" aria-hidden="true">▸</span>
+                        </button>
+                        <div class="faq-answer" aria-hidden="true">You can report bugs or issues through our Discord server.</div>
+                    </div>
+
+                    <div class="faq-item" role="listitem">
+                        <button class="faq-question" aria-expanded="false">
+                            <span class="faq-q-text">Does this script work on mobile?</span>
+                            <span class="faq-arrow" aria-hidden="true">▸</span>
+                        </button>
+                        <div class="faq-answer" aria-hidden="true">Yes — this script has been tested on mobile and has great functionality.</div>
+                    </div>
+
+                    <div class="faq-item" role="listitem">
+                        <button class="faq-question" aria-expanded="false">
+                            <span class="faq-q-text">Does this script work on most executors?</span>
+                            <span class="faq-arrow" aria-hidden="true">▸</span>
+                        </button>
+                        <div class="faq-answer" aria-hidden="true">You can find out yourself — it has been tested on executors such as Seliware, Potassium, and Delta.</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -361,12 +701,184 @@
             </a>
         </div>
     </div>
+        <!-- Game details modal (hidden until opened) -->
+        <div id="game-modal" class="game-modal" aria-hidden="true">
+            <div class="modal-backdrop" data-close></div>
+            <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+                <button class="modal-close" aria-label="Close">✕</button>
+                <div class="modal-thumb" id="modal-thumb" aria-hidden="true"></div>
+                <div class="modal-content">
+                    <h3 id="modal-title" class="modal-title"></h3>
+                    <div id="modal-status" class="modal-status"></div>
+                    <div id="modal-features" class="modal-features" aria-live="polite"></div>
+                    <a id="modal-join" class="modal-join" target="_blank" rel="noopener">Join</a>
+                </div>
+            </div>
+        </div>
     <!-- Background video element (muted, plays short random snippets) -->
     <video id="bg-video" muted playsinline preload="auto" aria-hidden="true"></video>
     <!-- Background audio (MP3) -->
     <audio id="bg-audio" preload="auto"></audio>
+    <!-- Interactive background dots canvas -->
+    <canvas id="bg-dots" aria-hidden="true"></canvas>
 
     <script>
+        // Interactive purple dot background
+        (function() {
+            const canvas = document.getElementById('bg-dots');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            let DPR = window.devicePixelRatio || 1;
+            let w = 0, h = 0;
+
+            function resize() {
+                DPR = window.devicePixelRatio || 1;
+                w = window.innerWidth;
+                h = window.innerHeight;
+                canvas.style.width = w + 'px';
+                canvas.style.height = h + 'px';
+                canvas.width = Math.floor(w * DPR);
+                canvas.height = Math.floor(h * DPR);
+                ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+                buildGrid();
+            }
+
+            // grid of dots
+            let dots = [];
+            function buildGrid() {
+                dots = [];
+                const spacing = Math.max(36, Math.round(Math.min(w, h) / 22));
+                for (let y = spacing/2; y < h; y += spacing) {
+                    for (let x = spacing/2; x < w; x += spacing) {
+                        dots.push({ x, y, base: 1.1 + Math.random() * 0.8, max: 6 + Math.random()*6 });
+                    }
+                }
+            }
+
+            // pointer tracking
+            const pointer = { x: -9999, y: -9999, last: 0 };
+            // Note: hovering the `tris` text should not boost the dot glow.
+            // The `.tris:hover` CSS already provides a text glow, so no JS toggle is needed.
+            function onMove(e) {
+                const p = e.touches ? e.touches[0] : e;
+                pointer.x = p.clientX;
+                pointer.y = p.clientY;
+                pointer.last = Date.now();
+            }
+            window.addEventListener('mousemove', onMove, { passive: true });
+            window.addEventListener('touchmove', onMove, { passive: true });
+
+            // animation
+            let raf = null;
+            function render() {
+                ctx.clearRect(0,0,w,h);
+
+                const time = Date.now();
+                const decay = Math.max(0, 1 - ((time - pointer.last) / 1200));
+
+                // draw dots
+                for (let i = 0; i < dots.length; i++) {
+                    const d = dots[i];
+                    const dx = d.x - pointer.x;
+                    const dy = d.y - pointer.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+
+                    const influenceRadius = 220; // px
+                    const inf = Math.max(0, 1 - (dist / influenceRadius));
+                    // fade when pointer inactive
+                    const effective = inf * decay;
+
+                    // no hover boost; keep dots independent of `.tris` hover
+                    const boost = 1;
+
+                    const r = d.base + effective * (d.max - d.base) * boost;
+                    const alpha = 0.06 + effective * 0.6 * boost;
+
+                    // subtle pulsing
+                    const pulse = 1 + 0.12 * Math.sin((i + time*0.002) );
+
+                    // glow via shadowBlur/shadowColor
+                    const blur = Math.max(0, 12 * effective * boost);
+                    const glowAlpha = Math.min(0.85, 0.65 * effective * boost + 0.05);
+
+                    ctx.beginPath();
+                    ctx.shadowBlur = blur;
+                    ctx.shadowColor = `rgba(118,0,244,${glowAlpha.toFixed(3)})`;
+                    ctx.fillStyle = `rgba(118,0,244,${alpha.toFixed(3)})`;
+                    ctx.arc(d.x, d.y, Math.max(0.6, r * pulse), 0, Math.PI * 2);
+                    ctx.fill();
+                    // reset shadow so stroke/further draws aren't affected
+                    ctx.shadowBlur = 0;
+                }
+
+                raf = requestAnimationFrame(render);
+            }
+
+            // initialize
+            resize();
+            window.addEventListener('resize', resize);
+            raf = requestAnimationFrame(render);
+        })();
+
+        // Modal open/close helpers (populate from game object)
+        (function(){
+            const modal = document.getElementById('game-modal');
+            const thumb = document.getElementById('modal-thumb');
+            const title = document.getElementById('modal-title');
+            const feat = document.getElementById('modal-features');
+            const status = document.getElementById('modal-status');
+            const join = document.getElementById('modal-join');
+            const closeBtn = modal && modal.querySelector('.modal-close');
+            let lastFocused = null;
+
+            window.openGameModal = function(game, openerEl) {
+                if (!modal) return;
+                lastFocused = openerEl || document.activeElement;
+                // thumbnail
+                if (game.icon && thumb) thumb.style.backgroundImage = `url('${game.icon.replace(/'/g, "\\'")}')`;
+                if (title) title.textContent = game.name || 'Unknown Game';
+                if (status) status.textContent = (game.scriptStatus || (game.updated ? 'updated' : 'outdated'));
+
+                // features
+                if (feat) {
+                    feat.innerHTML = '';
+                    const features = Array.isArray(game.features) ? game.features : [];
+                    if (features.length === 0) {
+                        const n = document.createElement('div'); n.className = 'feature'; n.textContent = 'No features listed'; feat.appendChild(n);
+                    } else {
+                        for (const f of features) {
+                            const el = document.createElement('div'); el.className = 'feature'; el.textContent = f; feat.appendChild(el);
+                        }
+                    }
+                }
+
+                if (join) {
+                    join.href = game.link || '#';
+                }
+
+                modal.classList.add('visible');
+                modal.setAttribute('aria-hidden','false');
+                // focus join button for keyboard users
+                try { join && join.focus(); } catch (e) {}
+            };
+
+            window.closeGameModal = function() {
+                if (!modal) return;
+                modal.classList.remove('visible');
+                modal.setAttribute('aria-hidden','true');
+                if (lastFocused && lastFocused.focus) try { lastFocused.focus(); } catch (e) {}
+            };
+
+            // close bindings
+            if (closeBtn) closeBtn.addEventListener('click', () => window.closeGameModal());
+            modal && modal.addEventListener('click', (e) => {
+                if (e.target && e.target.hasAttribute && e.target.hasAttribute('data-close')) {
+                    window.closeGameModal();
+                }
+            });
+            window.addEventListener('keydown', (e) => { if (e.key === 'Escape') window.closeGameModal(); });
+        })();
         const text = "tris.rocks";
         const speed = 120;
 
@@ -394,6 +906,29 @@
         }
 
         type();
+
+        // Cycle a small list of game names and animate the name
+        (function() {
+            const games = ['Jujutsu Shenanigans', 'Murder Mystery 2'];
+            let idx = 0;
+            const el = document.getElementById('gameName');
+            if (!el) return;
+
+            function showNext() {
+                // prepare
+                el.classList.remove('cycle');
+                // force reflow to restart animation
+                void el.offsetWidth;
+                el.textContent = games[idx];
+                el.classList.add('cycle');
+                idx = (idx + 1) % games.length;
+            }
+
+            // initial small delay so typing headline has time to start
+            setTimeout(showNext, 700);
+            // cycle every 2600ms (matches animation length)
+            setInterval(showNext, 2600);
+        })();
 
         function redirectMain() {
             window.location.href = "https://example.com";
@@ -437,7 +972,7 @@
                 container.innerHTML = '';
 
                 try {
-                    const resp = await fetch('https://raw.githubusercontent.com/trissploit/trisrocks.github.io/refs/heads/main/games.json', { cache: 'no-cache' });
+                    const resp = await fetch('https://raw.githubusercontent.com/TJWOTMS/trisismything.github.io/refs/heads/main/games.json', { cache: 'no-cache' });
                     if (!resp.ok) throw new Error('Failed to load games.json');
                     const games = await resp.json();
 
@@ -498,6 +1033,17 @@
                         card.appendChild(imageDiv);
                         card.appendChild(caption);
                         container.appendChild(card);
+                        // Open modal on click (prevent default navigation)
+                        card.addEventListener('click', (ev) => {
+                            ev.preventDefault();
+                            try { window.openGameModal && window.openGameModal(g, card); } catch (e) { console.error(e); }
+                        });
+                        card.addEventListener('keydown', (ev) => {
+                            if (ev.key === 'Enter' || ev.key === ' ') {
+                                ev.preventDefault();
+                                try { window.openGameModal && window.openGameModal(g, card); } catch (e) { console.error(e); }
+                            }
+                        });
                     }
                 } catch (e) {
                     container.textContent = 'Failed to load games.';
@@ -510,11 +1056,7 @@
 
         // Background audio shuffling multiple MP3s
         (function() {
-            const songs = [
-                'https://cdn.discordapp.com/attachments/1461091787962847413/1461120632208101440/So_Damn_Fucked_Up.mp3?ex=69696621&is=696814a1&hm=82d1013026183a22a29d8872ee8c7049e2d218dea6ecc2b7db9193cfe37332e4&',
-                'https://cdn.discordapp.com/attachments/1461091787962847413/1461123077663621312/Hate_Bein_Sober.mp3?ex=69696868&is=696816e8&hm=c2835ede9247d4d5d9cdc88b635016a44380e51cd88152db2ab2e9be1ac24dff&',
-                'https://cdn.discordapp.com/attachments/1461091787962847413/1461123785309819004/Lean_Chronicles_feat._Leewayy.mp3?ex=69696910&is=69681790&hm=3b6ace8dab77ed769151d5fe8a0dbec3e281ab1e06ba57d126fd20e247333341&'
-            ];
+            const songs = [];
 
             const audio = document.getElementById('bg-audio');
             if (!audio) return;
@@ -574,10 +1116,7 @@
         // Background video snippets: play random short clips at 2x speed (max 6s each)
         (function() {
             const clips = [
-                'https://cdn.discordapp.com/attachments/1461091787962847413/1461091943156285642/getbusy.mp4?ex=69694b69&is=6967f9e9&hm=c7920d79a393feb89eb39f5f550f90d69e43d4d21bf4839c6699e0bb462d1782&',
-                'https://cdn.discordapp.com/attachments/1461091787962847413/1461091947740397905/therace.mp4?ex=69694b6a&is=6967f9ea&hm=0ada5ea868a115a1b66e44a44ff28462626f06ea58d12603986014e532900fe8&',
-                'https://cdn.discordapp.com/attachments/1461091787962847413/1461092006024577206/lovesosa.mp4?ex=69694b78&is=6967f9f8&hm=b767d41350d9309b5543f9b07899b1e7ec69542c0f937dd975a4cf1f174b0afc&',
-                'https://cdn.discordapp.com/attachments/1461091787962847413/1461094563962945760/vet.mp4?ex=69694dd9&is=6967fc59&hm=a8d10da19036a63ffcb58e8814aac2c9c80d6fb9a54e253c5ee6488ca66a73be&'
+                'https://tris.rocks/therace.mp4'
             ];
 
             const video = document.getElementById('bg-video');
@@ -726,6 +1265,24 @@
             const sections = Array.from(document.querySelectorAll('.section'));
             let current = 0;
 
+            // create page indicator dots on the left
+            const dotsContainer = document.createElement('div');
+            dotsContainer.id = 'page-dots';
+            document.body.appendChild(dotsContainer);
+            const dots = sections.map((s, idx) => {
+                const d = document.createElement('div');
+                d.className = 'page-dot';
+                d.setAttribute('role', 'button');
+                d.setAttribute('aria-label', `Go to section ${idx + 1}`);
+                d.tabIndex = 0;
+                d.addEventListener('click', () => show(idx));
+                d.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(idx); }
+                });
+                dotsContainer.appendChild(d);
+                return d;
+            });
+
             function show(idx) {
                 current = Math.max(0, Math.min(idx, sections.length - 1));
                 sections.forEach((s, i) => {
@@ -735,6 +1292,11 @@
                         s.classList.remove('visible');
                     }
                 });
+
+                // update page dots active state
+                if (dots && dots.length) {
+                    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+                }
             }
 
             show(0);
@@ -775,6 +1337,67 @@
                 if (e.key === 'ArrowDown') { e.preventDefault(); go(1); }
                 if (e.key === 'ArrowUp') { e.preventDefault(); go(-1); }
             }, { passive: false });
+        })();
+
+        // FAQ expand/collapse behavior (waits for transitionend before removing 'open')
+        (function(){
+            const items = Array.from(document.querySelectorAll('.faq-item'));
+            if (!items.length) return;
+
+            items.forEach(item => {
+                const btn = item.querySelector('.faq-question');
+                const answer = item.querySelector('.faq-answer');
+                if (!btn || !answer) return;
+
+                // initialize collapsed
+                answer.style.maxHeight = '0px';
+                answer.style.opacity = '0';
+
+                btn.addEventListener('click', () => {
+                    const isOpen = item.classList.contains('open');
+
+                    if (!isOpen) {
+                        // OPEN
+                        item.classList.add('open');
+                        btn.setAttribute('aria-expanded', 'true');
+                        answer.setAttribute('aria-hidden', 'false');
+
+                        // measure and animate to that height
+                        const h = answer.scrollHeight;
+                        answer.style.maxHeight = h + 'px';
+                        // allow opacity to fade in slightly after starting
+                        requestAnimationFrame(() => { answer.style.opacity = '1'; });
+
+                        // cleanup after animation so content can reflow naturally
+                        const onEnd = (e) => {
+                            if (e.propertyName === 'max-height') {
+                                answer.style.maxHeight = '';
+                                answer.removeEventListener('transitionend', onEnd);
+                            }
+                        };
+                        answer.addEventListener('transitionend', onEnd);
+                    } else {
+                        // CLOSE: set explicit height then collapse to 0
+                        const cur = answer.scrollHeight;
+                        answer.style.maxHeight = cur + 'px';
+                        // force reflow so the transition occurs
+                        void answer.offsetHeight;
+                        // start collapse
+                        answer.style.maxHeight = '0px';
+                        answer.style.opacity = '0';
+                        btn.setAttribute('aria-expanded', 'false');
+                        answer.setAttribute('aria-hidden', 'true');
+
+                        const onEndClose = (e) => {
+                            if (e.propertyName === 'max-height') {
+                                item.classList.remove('open');
+                                answer.removeEventListener('transitionend', onEndClose);
+                            }
+                        };
+                        answer.addEventListener('transitionend', onEndClose);
+                    }
+                });
+            });
         })();
     </script>
 
