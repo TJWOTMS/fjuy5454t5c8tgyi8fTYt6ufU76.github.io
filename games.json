@@ -4,7 +4,9 @@
     "name": "Jujutsu Shenanigans",
     "icon": "https://tr.rbxcdn.com/180DAY-717484006e83a24085a9cdbc1a5db322/768/432/Image/Webp/noFilter",
     "updated": true,
-    "link": "https://www.roblox.com/games/9391468976/Jujutsu-Shenanigans"
+    "link": "https://www.roblox.com/games/9391468976/Jujutsu-Shenanigans",
+    "scriptStatus": "In Development",
+    "features": ["WIP"]
   }
   ,
   {
@@ -12,7 +14,9 @@
     "name": "Murder Mystery 2",
     "icon": "https://tr.rbxcdn.com/180DAY-c929c9ba9069190914f60bbfe47b6cb9/768/432/Image/Webp/noFilter",
     "updated": true,
-    "link": "#"
+    "link": "#",
+    "scriptStatus": "In Development",
+    "features": ["WIP"]
   }
   ,
   {
@@ -20,6 +24,8 @@
     "name": "Forsaken",
     "icon": "https://tr.rbxcdn.com/180DAY-462965dcfaadda40803a8a887cedfb39/768/432/Image/Webp/noFilter",
     "updated": true,
-    "link": "#"
+    "link": "#",
+    "scriptStatus": "In Development",
+    "features": ["WIP"]
   }
 ]
