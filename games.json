@@ -5,7 +5,11 @@
     "icon": "https://tr.rbxcdn.com/180DAY-717484006e83a24085a9cdbc1a5db322/768/432/Image/Webp/noFilter",
     "updated": true,
     "features": [
-      { "title": "Core Features", "items": ["auto farm", "teleport", "esp"] }
+      { "title": "Core Features", "items": [
+        { "name": "Auto Farm", "desc": "Automatically collect resources/targets for you." },
+        { "name": "Teleport", "desc": "Instantly move to chosen positions or players." },
+        { "name": "ESP", "desc": "See players and items through walls with overlays." }
+      ] }
     ],
     "scriptStatus": "updated",
     "link": "https://www.roblox.com/games/9391468976/Jujutsu-Shenanigans"
@@ -17,7 +21,11 @@
     "icon": "https://tr.rbxcdn.com/180DAY-c929c9ba9069190914f60bbfe47b6cb9/768/432/Image/Webp/noFilter",
     "updated": true,
     "features": [
-      { "title": "Core Features", "items": ["knife aimbot", "silent takedown", "autoloot"] }
+      { "title": "Core Features", "items": [
+        { "name": "Knife Aimbot", "desc": "Assists melee targeting for improved accuracy." },
+        { "name": "Silent Takedown", "desc": "Remove targets quietly without alerting others." },
+        { "name": "AutoLoot", "desc": "Automatically pick up nearby loot after takedowns." }
+      ] }
     ],
     "scriptStatus": "updated",
     "link": "#"
@@ -29,7 +37,11 @@
     "icon": "https://tr.rbxcdn.com/180DAY-462965dcfaadda40803a8a887cedfb39/768/432/Image/Webp/noFilter",
     "updated": true,
     "features": [
-      { "title": "Core Features", "items": ["speed", "noclip", "infinite-jump"] }
+      { "title": "Core Features", "items": [
+        { "name": "Speed", "desc": "Increase movement speed with smooth controls." },
+        { "name": "Noclip", "desc": "Move through geometry without collision." },
+        { "name": "Infinite Jump", "desc": "Allow repeated jumps without falling." }
+      ] }
     ],
     "scriptStatus": "updated",
     "link": "#"
