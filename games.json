@@ -6,9 +6,7 @@
     "updated": true,
     "features": [
       { "title": "Core Features", "items": [
-        { "name": "Auto Farm", "desc": "Automatically collect resources/targets for you." },
-        { "name": "Teleport", "desc": "Instantly move to chosen positions or players." },
-        { "name": "ESP", "desc": "See players and items through walls with overlays." }
+        { "name": "dasdwasdwasdaw", "desc": "tps to epstein island" }
       ] }
     ],
     "scriptStatus": "updated",
@@ -21,10 +19,33 @@
     "icon": "https://tr.rbxcdn.com/180DAY-c929c9ba9069190914f60bbfe47b6cb9/768/432/Image/Webp/noFilter",
     "updated": true,
     "features": [
-      { "title": "Core Features", "items": [
-        { "name": "Knife Aimbot", "desc": "Assists melee targeting for improved accuracy." },
-        { "name": "Silent Takedown", "desc": "Remove targets quietly without alerting others." },
-        { "name": "AutoLoot", "desc": "Automatically pick up nearby loot after takedowns." }
+      { "title": "Murderer Features", "items": [
+        { "name": "Kill Aura", "desc": "Automatically attack nearby players when you have the knife." },
+        { "name": "Silent Stab", "desc": "Perform stealth kills that avoid typical alerts." }
+      ] },
+      { "title": "Sheriff Features", "items": [
+        { "name": "Aim Assist", "desc": "Assist aiming to land shots on the murderer with higher accuracy." },
+        { "name": "Auto Sheriff", "desc": "Automatically equip and use the sheriff when available." }
+      ] },
+      { "title": "Farming", "items": [
+        { "name": "Auto Cash", "desc": "Collect in-game currency and rewards automatically over time." },
+        { "name": "Auto Wins", "desc": "Automate actions that increase win rate for grinding." }
+      ] },
+      { "title": "Fling", "items": [
+        { "name": "Player Fling", "desc": "Apply force to fling targeted players away." },
+        { "name": "Explosion Fling", "desc": "Create controlled explosions that throw nearby players." }
+      ] },
+      { "title": "Player Features", "items": [
+        { "name": "ESP", "desc": "Highlight players, items, and roles through walls." },
+        { "name": "Speed", "desc": "Adjust player movement speed smoothly." }
+      ] },
+      { "title": "World Features", "items": [
+        { "name": "No Fog", "desc": "Remove fog and visual obstructions for clearer view." },
+        { "name": "Time Scale", "desc": "Adjust global time scale to speed up or slow down rounds." }
+      ] },
+      { "title": "Miscellanious features", "items": [
+        { "name": "Performance Mode", "desc": "Reduce visual effects to improve FPS." },
+        { "name": "Auto-Respawn", "desc": "Automatically respawn and rejoin rounds when possible." }
       ] }
     ],
     "scriptStatus": "updated",
