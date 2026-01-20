@@ -4,7 +4,9 @@
     "name": "Jujutsu Shenanigans",
     "icon": "https://tr.rbxcdn.com/180DAY-717484006e83a24085a9cdbc1a5db322/768/432/Image/Webp/noFilter",
     "updated": true,
-    "features": ["auto farm","teleport","esp"],
+    "features": [
+      { "title": "Core Features", "items": ["auto farm", "teleport", "esp"] }
+    ],
     "scriptStatus": "updated",
     "link": "https://www.roblox.com/games/9391468976/Jujutsu-Shenanigans"
   }
@@ -14,7 +16,9 @@
     "name": "Murder Mystery 2",
     "icon": "https://tr.rbxcdn.com/180DAY-c929c9ba9069190914f60bbfe47b6cb9/768/432/Image/Webp/noFilter",
     "updated": true,
-    "features": ["knife aimbot","silent takedown","autoloot"],
+    "features": [
+      { "title": "Core Features", "items": ["knife aimbot", "silent takedown", "autoloot"] }
+    ],
     "scriptStatus": "updated",
     "link": "#"
   }
@@ -24,7 +28,9 @@
     "name": "Forsaken",
     "icon": "https://tr.rbxcdn.com/180DAY-462965dcfaadda40803a8a887cedfb39/768/432/Image/Webp/noFilter",
     "updated": true,
-    "features": ["speed","noclip","infinite-jump"],
+    "features": [
+      { "title": "Core Features", "items": ["speed", "noclip", "infinite-jump"] }
+    ],
     "scriptStatus": "updated",
     "link": "#"
   }
