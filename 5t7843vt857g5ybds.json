@@ -4,11 +4,7 @@
     "name": "Jujutsu Shenanigans",
     "icon": "https://tr.rbxcdn.com/180DAY-717484006e83a24085a9cdbc1a5db322/768/432/Image/Webp/noFilter",
     "updated": true,
-    "features": [
-      { "title": "Core Features", "items": [
-        { "name": "dasdwasdwasdaw", "desc": "tps to epstein island" }
-      ] }
-    ],
+    "features": [ { "title": "WIP", "items": [ { "name": "WIP", "desc": "WIP" } ] } ],
     "scriptStatus": "updated",
     "link": "https://www.roblox.com/games/9391468976/Jujutsu-Shenanigans"
   }
@@ -18,9 +14,7 @@
     "name": "Murder Mystery 2",
     "icon": "https://tr.rbxcdn.com/180DAY-c929c9ba9069190914f60bbfe47b6cb9/768/432/Image/Webp/noFilter",
     "updated": true,
-    "features": [
-      { "title": "WIP", "items": [ { "name": "WIP", "desc": "WIP" } ] }
-    ],
+    "features": [ { "title": "WIP", "items": [ { "name": "WIP", "desc": "WIP" } ] } ],
     "scriptStatus": "in development",
     "link": "https://www.roblox.com/games/142823291/Murder-Mystery-2"
   }
@@ -30,13 +24,7 @@
     "name": "Forsaken",
     "icon": "https://tr.rbxcdn.com/180DAY-462965dcfaadda40803a8a887cedfb39/768/432/Image/Webp/noFilter",
     "updated": true,
-    "features": [
-      { "title": "Core Features", "items": [
-        { "name": "Speed", "desc": "Increase movement speed with smooth controls." },
-        { "name": "Noclip", "desc": "Move through geometry without collision." },
-        { "name": "Infinite Jump", "desc": "Allow repeated jumps without falling." }
-      ] }
-    ],
+    "features": [ { "title": "WIP", "items": [ { "name": "WIP", "desc": "WIP" } ] } ],
     "scriptStatus": "in development",
     "link": "https://www.roblox.com/games/18687417158/Forsaken"
   }
@@ -46,7 +34,7 @@
     "name": "Tha Bronx 3",
     "icon": "https://tris.rocks/thabronx3.png",
     "updated": false,
-    "features": [],
+    "features": [ { "title": "WIP", "items": [ { "name": "WIP", "desc": "WIP" } ] } ],
     "scriptStatus": "in development",
     "link": "https://www.roblox.com/games/16472538603/THA-BRONX-3"
   }
