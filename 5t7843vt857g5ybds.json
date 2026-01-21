@@ -1,4 +1,4 @@
-[
+\[
   {
     "slug": "jujutsu-shenanigans",
     "name": "Jujutsu Shenanigans",
@@ -33,9 +33,9 @@
     "slug": "tha-bronx-3",
     "name": "Tha Bronx 3",
     "icon": "https://tris.rocks/thabronx3.png",
-    "updated": false,
+    "updated": true,
     "features": [ { "title": "WIP", "items": [ { "name": "WIP", "desc": "WIP" } ] } ],
-    "scriptStatus": "updated",
+    "scriptStatus": "in development",
     "link": "https://www.roblox.com/games/16472538603/THA-BRONX-3"
   }
 ]
