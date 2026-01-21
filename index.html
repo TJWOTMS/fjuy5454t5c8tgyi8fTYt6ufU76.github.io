@@ -28,7 +28,7 @@
 
         /* TEXT CONTAINER */
         h1 {
-            font-size: 3.5rem;
+            font-size: 56px; /* fixed size to keep consistent across devices */
             margin-bottom: 40px;
             letter-spacing: 2px;
             position: relative;
@@ -41,12 +41,26 @@
         /* persistent glow for the 'tris' text; hover strengthens it */
         .tris {
             color: #7600f4;
+            /* base glow */
             text-shadow: 0 0 10px rgba(118,0,244,0.65), 0 0 24px rgba(118,0,244,0.18);
             transition: text-shadow 220ms ease, transform 180ms ease;
             will-change: text-shadow, transform;
+            /* gentle pulsing glow */
+            animation: trisGlow 2400ms ease-in-out infinite alternate;
+        }
+        @keyframes trisGlow {
+            0% {
+                text-shadow: 0 0 8px rgba(118,0,244,0.55), 0 0 20px rgba(118,0,244,0.14);
+            }
+            50% {
+                text-shadow: 0 0 20px rgba(118,0,244,0.95), 0 0 44px rgba(118,0,244,0.28);
+            }
+            100% {
+                text-shadow: 0 0 14px rgba(118,0,244,0.75), 0 0 32px rgba(118,0,244,0.22);
+            }
         }
         .tris:hover {
-            text-shadow: 0 0 18px rgba(118,0,244,0.95), 0 0 40px rgba(118,0,244,0.35);
+            text-shadow: 0 0 22px rgba(118,0,244,0.98), 0 0 48px rgba(118,0,244,0.38);
             transform: translateZ(0);
             cursor: default;
         }
@@ -73,6 +87,19 @@
 
         .bar.blink {
             animation: blink 2s steps(2, start) infinite;
+        }
+
+        /* caret highlight used for the final 2s when Get Features is triggered */
+        .bar.scriptbar-highlight {
+            animation: caretHighlight 2s ease-in-out both;
+            box-shadow: 0 0 26px rgba(118,0,244,0.98), 0 0 56px rgba(118,0,244,0.28) !important;
+            transform: scaleX(1.05);
+        }
+
+        @keyframes caretHighlight {
+            0% { opacity: 1; box-shadow: 0 0 8px rgba(118,0,244,0.55); transform: scaleX(1); }
+            50% { opacity: 1; box-shadow: 0 0 28px rgba(118,0,244,0.98); transform: scaleX(1.05); }
+            100% { opacity: 1; box-shadow: 0 0 12px rgba(118,0,244,0.75); transform: scaleX(1); }
         }
 
         /* MAIN BUTTON */
@@ -146,6 +173,18 @@
             transform: translateY(-2px) scale(1.02);
         }
 
+        /* temporary glow applied when user requests features (10s) */
+        .code-holder.script-glow {
+            animation: scriptGlow 1000ms ease-in-out infinite alternate;
+            border-color: rgba(118,0,244,0.95) !important;
+            box-shadow: 0 18px 48px rgba(118,0,244,0.32), 0 0 40px rgba(118,0,244,0.18) !important;
+        }
+
+        @keyframes scriptGlow {
+            from { box-shadow: 0 10px 30px rgba(118,0,244,0.14), 0 0 12px rgba(118,0,244,0.10); }
+            to   { box-shadow: 0 26px 60px rgba(118,0,244,0.36), 0 0 64px rgba(118,0,244,0.26); }
+        }
+
         /* ICON LINKS */
         .bottom-buttons {
             display: flex;
@@ -200,6 +239,16 @@
             transform: translateY(20px);
             transition: opacity 0.6s ease, transform 0.6s ease;
             pointer-events: none;
+            /* allow section content to scroll when taller than viewport */
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            /* hide native scrollbars but keep scrolling functional */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE 10+ */
+        }
+
+        /* WebKit browsers: hide the scrollbar track/thumb for sections */
+        .section::-webkit-scrollbar { width: 0; height: 0; }
             background: transparent;
         }
 
@@ -210,7 +259,7 @@
             top: 50%;
             transform: translateY(-50%);
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             gap: 12px;
             z-index: 1200;
             -webkit-tap-highlight-color: transparent;
@@ -241,6 +290,23 @@
             pointer-events: auto;
             z-index: 2;
         }
+
+        /* Helper classes: center short sections, top-align long/scrollable ones */
+        .section.centered { justify-content: center; }
+        .section.top-aligned { justify-content: flex-start; }
+
+        /* Hide visible scrollbars for page sections while preserving scroll behavior */
+        body {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        body::-webkit-scrollbar { width: 0; height: 0; }
+
+        .section {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        .section::-webkit-scrollbar { display: none; width: 0; height: 0; }
 
         .section:not(.visible) {
             z-index: 1;
@@ -291,7 +357,7 @@
 
         /* Subtitle under main header (cycles game names) */
         .subtitle {
-            margin-top: 12px;
+            margin-top: 2px; /* moved slightly higher under the main title */
             color: #bfbfbf;
             font-size: 1.05rem;
             display: flex;
@@ -301,8 +367,9 @@
             opacity: 0;
             transform: translateY(6px);
             animation: subtitleIn 600ms cubic-bezier(.2,.9,.2,1) forwards;
-            /* reserve space so changing names don't cause layout jumps */
-            min-width: 20ch;
+            /* allow dynamic width to fit the current game name */
+            min-width: 0;
+            width: auto;
         }
 
         .subtitle-prefix { color: #bfbfbf; font-size: 0.95rem; }
@@ -313,9 +380,10 @@
             display: inline-block;
             will-change: transform, opacity;
             transition: transform 260ms cubic-bezier(.2,.9,.2,1), opacity 260ms ease, font-size 220ms ease;
-            text-align: left;
-            /* allow smoother visual sizing when text length changes */
-            min-width: 14ch;
+            text-align: center;
+            /* let the text size dictate width so it stays centered under the heading */
+            min-width: 0;
+            width: auto;
             /* subtle persistent glow for the game name */
             text-shadow: 0 0 12px rgba(118,0,244,0.75), 0 0 30px rgba(118,0,244,0.18);
         }
@@ -392,6 +460,82 @@
         /* Center the games and allow wrapping so they sit in the middle based on count */
         .games-list { display: flex; gap: 16px; justify-content: center; align-items: center; flex-wrap: wrap; padding-bottom: 8px; -webkit-overflow-scrolling: touch; }
 
+        /* Developer cards (reused visual language from game cards) */
+        .dev-cards { display:flex; gap:16px; justify-content:center; align-items:stretch; flex-wrap:wrap; margin-top:12px; }
+        .dev-card {
+            width: 360px;
+            padding: 22px 150px 64px 18px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid #7600f4;
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+            align-items:flex-start;
+            box-sizing:border-box;
+            position: relative;
+            overflow: visible;
+            min-height: 160px;
+        }
+        .dev-avatar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 130px;
+            height: 130px;
+            background-size: cover;
+            background-position: center;
+            border: 1px solid rgba(255,255,255,0.04);
+            box-shadow: 0 8px 30px rgba(118,0,244,0.08);
+        }
+        .dev-name { color: #fff; font-weight:900; font-size:1.05rem; }
+        .dev-role { color: #d9d2ff; font-weight:700; font-size:0.95rem; }
+
+        /* Discord icon inside card (bottom-left) */
+        .dev-discord {
+            position: absolute;
+            left: 10px;
+            bottom: 10px;
+            color: #bfbfbf;
+            font-size: 1.05rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border: 1px solid transparent;
+            transition: box-shadow 180ms ease, color 160ms ease, transform 160ms ease, border-color 160ms ease;
+            z-index: 3;
+            background: transparent;
+        }
+        .dev-discord .fa-discord { pointer-events: none; }
+
+        /* Hover and focus for the discord icon itself (glow, no outline/border change) */
+        .dev-discord:hover {
+            box-shadow: 0 12px 40px rgba(118,0,244,0.28);
+            color: #fff;
+            transform: translateY(-3px) scale(1.02);
+            border-color: transparent;
+            outline: none;
+        }
+        .dev-discord:focus, .dev-discord:focus-visible {
+            outline: none !important;
+            box-shadow: 0 12px 40px rgba(118,0,244,0.28);
+            border-color: transparent;
+        }
+
+        /* Glow on hover for outlined elements */
+        .code-holder:hover, .game-card:hover, .faq-item:hover, .dev-card:hover, .modal-card:hover, .game-image:hover, .copy-btn:hover, .top-btn:hover, .card-status:hover, .modal-thumb:hover {
+            border-color: rgba(118,0,244,0.95) !important;
+            box-shadow: 0 12px 48px rgba(118,0,244,0.16), 0 0 32px rgba(118,0,244,0.22) !important;
+            transform: translateZ(0) scale(1.01);
+        }
+        /* Make discord icon glow when its card is hovered */
+        .dev-card:hover .dev-discord {
+            box-shadow: 0 12px 44px rgba(118,0,244,0.28);
+            color: #fff;
+            border-color: transparent;
+        }
+
         /* Thumbnail-style game cards */
         .game-card {
             width: 320px;
@@ -460,35 +604,60 @@
             align-items: center;
             justify-content: center;
         }
+        .card-feature-count {
+            display:inline-block;
+            background: rgba(255,255,255,0.02);
+            color: #d9d2ff;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-weight: 800;
+            font-size: 0.8rem;
+            line-height: 1;
+            margin-left: 8px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
         .card-status img { display: block; width: 24px; height: 24px; }
         .card-status.updated { /* semantic class kept for aria/title only */ }
         .card-status.outdated { /* semantic class kept for aria/title only */ }
 
         @media (max-width: 700px) {
-            .games-list { gap: 12px; }
-            .game-card { width: 240px; height: auto; border-radius: 0; }
+            .games-list { gap: 12px; justify-content: space-between; }
+            /* Two-up responsive cards on most phones */
+            .game-card { width: calc(50% - 10px); flex: 0 0 calc(50% - 10px); height: auto; border-radius: 0; }
             .game-image { height: 140px; }
-            .game-caption { padding: 6px 10px; }
+            .game-caption { padding: 6px 8px; }
             .card-name { font-size: 0.95rem; }
             .card-status { padding: 4px 8px; font-size: 0.85rem; }
+        }
+        /* Very narrow phones: single-column cards to avoid scaling issues */
+        @media (max-width: 420px) {
+            .games-list { gap: 10px; justify-content: center; }
+            .game-card { width: 100%; flex: 0 0 100%; }
+            .game-image { height: 120px; }
+            .game-caption { padding: 6px 8px; }
+            .card-name { font-size: 0.98rem; }
         }
         .games-actions { display:flex; gap:8px; margin-top:8px; justify-content:flex-end; }
 
         /* Mobile adjustments */
         @media (max-width: 700px) {
-            /* On small screens keep everything centered, smaller, and disable scroll */
-            body { overflow: hidden; height: 100vh; }
+            /* On small screens keep everything centered and allow scrolling when content is large */
+            body { overflow: auto; height: 100vh; }
+            /* hide body scrollbars visually (preserve modal custom scrollbars) */
+            body { scrollbar-width: none; -ms-overflow-style: none; }
+            body::-webkit-scrollbar { width: 0; height: 0; }
             .section {
                 position: fixed;
                 inset: 0;
                 height: 100vh;
-                padding: 20px 12px calc(20px + var(--footer-height));
+                /* reserve space for the phone-sized top buttons + safe area */
+                padding: calc(12px + env(safe-area-inset-top, 0px) + 64px) 12px calc(20px + var(--footer-height));
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                justify-content: center;
+                justify-content: flex-start;
             }
-            h1 { font-size: 1.6rem; margin-bottom: 18px; letter-spacing: 1px; }
+            h1 { margin-bottom: 18px; letter-spacing: 1px; font-size: 56px; }
             .image-container { height: 30vh; width: 92%; border-radius: 0; }
             .content-header { font-size: 1.2rem; }
             .content-subtext { font-size: 0.9rem; padding: 0 10px; }
@@ -497,6 +666,10 @@
             :root { --footer-height: 60px; }
             /* Make sure background video stays behind content on mobile */
             #bg-video { opacity: 0.45; }
+            /* Developer card adjustments on small screens */
+            .dev-card { width: 92%; padding: 18px 18px 64px 18px; }
+            .dev-avatar { width: 80px; height: 80px; right: 12px; top: 12px; }
+            .dev-discord { left: 10px; bottom: 10px; }
         }
         /* Top-right buttons: Documentation and Key System */
         #top-right-buttons {
@@ -526,6 +699,9 @@
             box-shadow: 0 6px 18px rgba(0,0,0,0.45);
             font-weight: 700;
         }
+        /* Top button icon styling (Font Awesome). Hide icons on large screens, show on small screens. */
+        .top-btn i.fa { display: none; width: 18px; height: 18px; line-height: 1; }
+        .top-btn .btn-text { display: inline-block; }
         .top-btn:active { transform: translateY(1px); }
 
         /* The Key System button glows purple */
@@ -539,7 +715,13 @@
         .top-btn:hover { transform: translateY(-2px) scale(1.02); }
 
         @media (max-width: 560px) {
-            #top-right-buttons { display: none; }
+            /* Keep top-right quick-action buttons visible on small screens.
+               Make them stretch as two large buttons across the top and
+               show only the Font Awesome icon while hiding the text label. */
+            #top-right-buttons { left: 0; right: 0; top: 0; display: flex; gap: 6px; justify-content: center; padding: 8px; box-sizing: border-box; }
+            .top-btn { flex: 1 1 50%; padding: 12px 10px; font-size: 1rem; }
+            .top-btn i.fa { display: inline-block; }
+            .top-btn .btn-text { display: none; }
         }
         /* Game details modal (glass-like) */
         @keyframes modalPop {
@@ -577,13 +759,62 @@
             color: #fff; font-size: 16px; cursor: pointer; padding:6px 8px; border-radius:0; transition: transform 160ms ease, box-shadow 160ms ease; z-index:5;
         }
         .modal-close:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(118,0,244,0.12); }
-        .modal-thumb { width: 420px; height: 260px; background-size: cover; background-position: center; border: 1px solid rgba(118,0,244,0.16); flex: 0 0 auto; }
-        .modal-content { display:flex; flex-direction:column; gap:12px; align-items:flex-start; justify-content:flex-start; padding-right:6px; width: 100%; }
-        .modal-title { margin: 0; font-size: 1.35rem; color: #fff; }
-        .modal-title-row { display:flex; align-items:center; gap:10px; }
+        .modal-thumb { width: 420px; height: 260px; background-size: cover; background-position: center; border: 1px solid rgba(118,0,244,0.16); flex: 0 0 420px; max-width: 48%; }
+        .modal-content { display:flex; flex-direction:column; gap:12px; align-items:flex-start; justify-content:flex-start; padding-right:6px; flex: 1 1 auto; min-width: 0; }
+        .modal-title { margin: 0; font-size: 1.35rem; color: #fff; flex: 1 1 auto; min-width: 0; }
+        .modal-title-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
         .modal-title-status { font-size: 0.95rem; color: #bfbfbf; font-weight:700; display:flex; align-items:center; gap:8px; }
+
+        .modal-get-features {
+            background: transparent; border: 1px solid rgba(118,0,244,0.14); color: #fff; padding: 8px 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-weight:700; border-radius: 0;
+        }
+        .modal-get-features:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(118,0,244,0.08); }
+
+        .modal-feature-count {
+            display: inline-block;
+            background: rgba(255,255,255,0.02);
+            color: #d9d2ff;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            line-height: 1;
+            margin-left: 0; /* default - no extra left margin on small screens */
+            border: 1px solid rgba(255,255,255,0.08); /* outlined look */
+            box-shadow: 0 1px 0 rgba(255,255,255,0.02) inset;
+            align-self: center;
+        }
+
+        /* On larger viewports keep a left gap so the pill sits spaced from title */
+        @media (min-width: 921px) {
+            .modal-feature-count { margin-left: 10px; }
+        }
+
+        /* On narrow screens center the title row content */
+        @media (max-width: 920px) {
+            .modal-title-row { justify-content: center; }
+            .modal-title { text-align: center; }
+        }
         .modal-thumb-wrap { display:flex; flex-direction:column; gap:8px; align-items:flex-start; flex: 0 0 auto; }
-        @media (max-width: 720px) { .modal-thumb-wrap { align-items:center; } }
+        @media (max-width: 920px) {
+            .modal-card { flex-direction: column; }
+            .modal-thumb { width: 100%; max-width: 100%; flex: 0 0 auto; height: 220px; }
+            .modal-content { width: 100%; }
+            .modal-thumb-wrap { align-items:center; }
+        }
+
+        /* Better alignment for feature groups/items on narrow screens */
+        @media (max-width: 920px) {
+            .modal-feature-rows { gap: 10px; }
+            .modal-feature-row { flex-direction: column; gap: 10px; }
+            .modal-feature-section { flex: 1 1 100%; min-width: 0; width: 100%; }
+            .modal-feature-section .feature-title { text-align: center; }
+            .modal-feature-section .feature-list { display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap; }
+            .modal-features .feature { display: inline-flex; justify-content:center; align-items:center; }
+            .modal-feature-section .feature-item { width: 100%; box-sizing: border-box; }
+            /* ensure modal features area has comfortable padding on phones */
+            #modal-features { padding: 8px 12px !important; }
+        }
         .modal-features { display:flex; flex-direction:column; gap:12px; }
         /* make the features region scrollable with a visible slider */
         #modal-features, .modal-features {
@@ -611,6 +842,12 @@
         }
         /* Firefox */
         #modal-features { scrollbar-width: thin; scrollbar-color: rgba(118,0,244,0.22) transparent; }
+        /* Hide modal scrollbar visually while preserving scroll behavior */
+        #modal-features {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE 10+ */
+        }
+        #modal-features::-webkit-scrollbar { display: none; width: 0; height: 0; }
         .modal-features .feature { background: rgba(118,0,244,0.08); border: 1px solid rgba(118,0,244,0.16); padding:6px 10px; border-radius:3px; color:#eae6ff; font-weight:700; }
         /* Feature groups inside modal: a titled group with a list of feature chips */
         .modal-features .feature-group { display:flex; flex-direction:column; gap:8px; padding:8px; border-radius:4px; background: rgba(255,255,255,0.02); border:1px solid rgba(118,0,244,0.06); }
@@ -640,6 +877,39 @@
         }
         .modal-join:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 34px rgba(118,0,244,0.22), 0 0 20px rgba(118,0,244,0.35); }
         .modal-join:active { transform: translateY(1px); }
+
+        /* container for bottom-right modal actions (Join + Get Features) */
+        .modal-actions {
+            position: absolute; right: 18px; bottom: 18px; display: flex; gap: 8px; align-items: center; z-index: 6;
+        }
+        .modal-get-features {
+            padding: 10px 12px; background: transparent; border: 1px solid rgba(118,0,244,0.14); color: #fff; cursor: pointer; font-weight:700; display:inline-flex; gap:8px; align-items:center; min-height:40px;
+        }
+        .modal-get-features:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(118,0,244,0.10); }
+
+        /* When placed inside .modal-actions, ensure Join is static and both controls match size */
+        .modal-actions .modal-join,
+        .modal-actions .modal-get-features {
+            position: static !important;
+            right: auto !important;
+            bottom: auto !important;
+            min-height: 40px;
+            padding-top: 10px; padding-bottom: 10px;
+            align-self: center;
+        }
+
+        .modal-actions .modal-join { display: inline-flex; gap:8px; align-items:center; }
+
+        /* Leave room for the action buttons so features list won't overlap them on small screens */
+        #modal-features { padding-bottom: 96px; }
+
+        /* On narrow screens stack actions under the features list and center them */
+        @media (max-width: 720px) {
+            .modal-actions { position: static; justify-content: center; margin-top: 10px; bottom: auto; right: auto; }
+            #modal-features { padding-bottom: 24px; }
+            .modal-actions .modal-join,
+            .modal-actions .modal-get-features { width: auto; }
+        }
 
         @media (max-width: 720px) {
             .modal-card { flex-direction: column; align-items: center; padding-bottom: 22px; }
@@ -682,6 +952,12 @@
         .faq-question { color: #ffffff !important; }
         .faq-q-text { color: #ffffff !important; }
         .faq-answer { color: #bfbfbf !important; }
+
+        /* Re-enable tris glow (global reset above disables text-shadow). */
+        .tris {
+            text-shadow: 0 0 14px rgba(118,0,244,0.75) !important;
+            animation: trisGlow 2400ms ease-in-out infinite alternate !important;
+        }
         /* FAQ glass — cleaner frosted glass look (inspired by modern iOS glass)
            Keep corners square per project requirement while using backdrop blur
            and a subtle border for depth. */
@@ -730,7 +1006,7 @@
 
         <!-- CODE HOLDER (copyable) -->
 
-        <div class="code-holder">
+        <div id="code-holder" class="code-holder">
             <pre><code id="code-text">loadstring(game:HttpGet("https://tris.rocks/loader.lua"))();</code></pre>
             <button class="copy-btn" id="copy-btn" onclick="copyCode()">Copy</button>
         </div>
@@ -740,8 +1016,14 @@
 
     <!-- Top-right quick actions -->
     <div id="top-right-buttons" aria-hidden="false">
-        <a href="#information" class="top-btn" role="button" aria-label="Information">Information</a>
-        <a href="#key-system" class="top-btn glow" role="button" aria-label="Key System">Key System</a>
+        <a href="#information" class="top-btn" role="button" aria-label="Information">
+            <i class="fa-solid fa-book" aria-hidden="true"></i>
+            <span class="btn-text">Information</span>
+        </a>
+        <a href="#key-system" class="top-btn glow" role="button" aria-label="Key System">
+            <i class="fa-solid fa-key" aria-hidden="true"></i>
+            <span class="btn-text">Key System</span>
+        </a>
     </div>
 
     <!-- content section removed per user request -->
@@ -795,6 +1077,26 @@
         </div>
     </div>
 
+    <div class="section" id="developers">
+        <h2 class="content-header">our developers</h2>
+        <div class="games-section" aria-live="polite">
+            <div class="dev-cards" role="list">
+                <div class="dev-card" role="listitem" aria-label="worldwide">
+                    <div class="dev-avatar" style="background-image: url('https://tris.rocks/worldwide.png'); background-size: cover; background-position: center;"></div>
+                    <div class="dev-name">worldwide</div>
+                    <div class="dev-role">founder, developer</div>
+                    <a class="dev-discord" href="https://discord.gg/QwDRmQGXhZ" target="_blank" rel="noopener" aria-label="worldwide discord"><i class="fa-brands fa-discord"></i></a>
+                </div>
+                <div class="dev-card" role="listitem" aria-label="lolnebula">
+                    <div class="dev-avatar" style="background-image: url('https://tris.rocks/lolt.png');"></div>
+                    <div class="dev-name">lolnebula</div>
+                    <div class="dev-role">developer</div>
+                    <a class="dev-discord" href="https://discord.gg/QwDRmQGXhZ" target="_blank" rel="noopener" aria-label="lolnebula discord"><i class="fa-brands fa-discord"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="fixed-footer" aria-hidden="false">
         <div class="bottom-buttons">
             <a href="https://discord.gg/QwDRmQGXhZ" target="_blank" class="icon-button" aria-label="Discord">
@@ -813,10 +1115,17 @@
                 <div class="modal-content">
                     <div class="modal-title-row">
                         <h3 id="modal-title" class="modal-title"></h3>
+                        <span id="modal-feature-count" class="modal-feature-count" aria-hidden="true"></span>
                         <div id="modal-title-status" class="modal-title-status" aria-hidden="true"></div>
                     </div>
                     <div id="modal-features" class="modal-features" aria-live="polite"></div>
-                    <a id="modal-join" class="modal-join" target="_blank" rel="noopener">Join</a>
+                    <div class="modal-actions">
+                        <button id="modal-get-features" class="modal-get-features" aria-label="Get Features">
+                            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                            <span class="btn-text">Get Features</span>
+                        </button>
+                        <a id="modal-join" class="modal-join" target="_blank" rel="noopener">Join</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -828,6 +1137,25 @@
     <canvas id="bg-dots" aria-hidden="true"></canvas>
 
     <script>
+        // Load lucide (icons) and replace placeholders with SVGs. If lucide fails,
+        // the page will still work and buttons will show text labels.
+        (function loadLucide() {
+            try {
+                const script = document.createElement('script');
+                script.src = 'https://unpkg.com/lucide@latest/dist/lucide.min.js';
+                script.async = true;
+                script.onload = function() {
+                    try {
+                        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                            window.lucide.createIcons();
+                        }
+                    } catch (e) { /* ignore */ }
+                };
+                document.head.appendChild(script);
+                // re-run replacement when viewport changes (icons appear/disappear)
+                window.addEventListener('resize', () => { try { window.lucide && window.lucide.createIcons && window.lucide.createIcons(); } catch (e) {} }, { passive: true });
+            } catch (e) {}
+        })();
         // Interactive purple dot background
         (function() {
             const canvas = document.getElementById('bg-dots');
@@ -915,6 +1243,40 @@
             raf = requestAnimationFrame(render);
         })();
 
+        // Ensure pages without vertical overflow are vertically centered,
+        // while scrollable pages are top-aligned so their header is visible.
+        (function() {
+            const sections = Array.from(document.querySelectorAll('.section'));
+            if (!sections.length) return;
+
+            function updateAlignment() {
+                sections.forEach(s => {
+                    // small tolerance to avoid off-by-one from subpixel rounding
+                    const scrollable = s.scrollHeight > s.clientHeight + 2;
+                    if (scrollable) {
+                        s.classList.remove('centered');
+                        s.classList.add('top-aligned');
+                    } else {
+                        s.classList.remove('top-aligned');
+                        s.classList.add('centered');
+                    }
+                });
+            }
+
+            // Run on load and resize
+            window.addEventListener('load', updateAlignment, { passive: true });
+            window.addEventListener('resize', updateAlignment, { passive: true });
+
+            // Observe size changes inside sections (images, dynamic content)
+            if (window.ResizeObserver) {
+                const ro = new ResizeObserver(updateAlignment);
+                sections.forEach(s => ro.observe(s));
+            }
+
+            // initial check
+            updateAlignment();
+        })();
+
         // Modal open/close helpers (populate from game object)
         (function(){
             const modal = document.getElementById('game-modal');
@@ -932,13 +1294,30 @@
                 // thumbnail
                 if (game.icon && thumb) thumb.style.backgroundImage = `url('${game.icon.replace(/'/g, "\\'")}')`;
                 if (title) title.textContent = game.name || 'Unknown Game';
-                const st = (game.scriptStatus || (game.updated ? 'updated' : 'outdated'));
-                // Use the same inline SVG icons as the game card for updated/outdated
-                const updatedSvg = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM3NjAwZjQiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWNpcmNsZS1jaGVjay1pY29uIGx1Y2lkZS1jaXJjbGUtY2hlY2siPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjEwIi8+PHBhdGggZD0ibTkgMTIgMiAyIDQtNCIvPjwvc3ZnPg==';
-                const outdatedSvg = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZjAwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWNpcmNsZS14LWljb24gbHVjaWRlLWNpcmNsZS14Ij48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSIxMCIvPjxwYXRoIGQ9Im0xNSA5LTYgNiIvPjxwYXRoIGQ9Im05IDkgNiA2Ii8+PC9zdmc+';
-                const icon = (game.updated ? updatedSvg : outdatedSvg);
+                const st = String((game.scriptStatus || (game.updated ? 'updated' : 'outdated'))).toLowerCase();
+                // compute total features count (sum items in groups or count strings)
+                const featuresArr = Array.isArray(game.features) ? game.features : [];
+                let totalFeatures = 0;
+                for (const f of featuresArr) {
+                    if (typeof f === 'string') totalFeatures += 1;
+                    else if (f && Array.isArray(f.items)) totalFeatures += f.items.length;
+                    else totalFeatures += 1;
+                }
                 if (titleStatus) {
-                    titleStatus.innerHTML = `<img src="${icon}" alt="${game.updated ? 'Updated' : 'Outdated'}" style="width:18px;height:18px;display:inline-block;vertical-align:middle">`;
+                    let iconHtml = '';
+                    if (st === 'in development') {
+                        iconHtml = `<i class="fa-solid fa-circle-minus" aria-hidden="true" style="color:#0b82ff;display:inline-block;vertical-align:middle;width:18px;height:18px;font-size:18px"></i>`;
+                    } else if (st === 'updated') {
+                        iconHtml = `<i class="fa-solid fa-circle-check" aria-hidden="true" style="color:#7600f4;display:inline-block;vertical-align:middle;width:18px;height:18px;font-size:18px"></i>`;
+                    } else {
+                        iconHtml = `<i class="fa-solid fa-circle-xmark" aria-hidden="true" style="color:#ff3b3b;display:inline-block;vertical-align:middle;width:18px;height:18px;font-size:18px"></i>`;
+                    }
+                    titleStatus.innerHTML = iconHtml;
+                    const countEl = document.getElementById('modal-feature-count');
+                    if (countEl) {
+                        countEl.textContent = `${totalFeatures} feature${totalFeatures === 1 ? '' : 's'}`;
+                        countEl.setAttribute('aria-hidden', 'true');
+                    }
                 }
 
                 // features: render each entry as its own full-width section.
@@ -1059,27 +1438,42 @@
 
         type();
 
-        // Cycle a small list of game names and animate the name
+        // Game name cycler: start/stop programmatically and feed names from games.json
         (function() {
-            const games = ['Jujutsu Shenanigans', 'Murder Mystery 2'];
-            let idx = 0;
-            const el = document.getElementById('gameName');
-            if (!el) return;
+            let cyclerInterval = null;
+            // names: array of strings
+            window.startGameCycler = function(names) {
+                const el = document.getElementById('gameName');
+                if (!el) return;
+                if (!Array.isArray(names) || names.length === 0) {
+                    names = ['tris rocks'];
+                }
 
-            function showNext() {
-                // prepare
-                el.classList.remove('cycle');
-                // force reflow to restart animation
-                void el.offsetWidth;
-                el.textContent = games[idx];
-                el.classList.add('cycle');
-                idx = (idx + 1) % games.length;
-            }
+                // clear previous cycler if running
+                if (cyclerInterval) {
+                    clearInterval(cyclerInterval);
+                    cyclerInterval = null;
+                }
 
-            // initial small delay so typing headline has time to start
-            setTimeout(showNext, 700);
-            // cycle every 2600ms (matches animation length)
-            setInterval(showNext, 2600);
+                let idx = 0;
+                function showNext() {
+                    // remove any class-based animation to ensure inline animation restart
+                    el.classList.remove('cycle');
+                    // set the text first
+                    el.textContent = names[idx];
+                    // force reflow
+                    void el.offsetWidth;
+                    // clear any previous inline animation then explicitly apply the gameCycle
+                    el.style.animation = 'none';
+                    void el.offsetWidth;
+                    el.style.animation = 'gameCycle 2400ms cubic-bezier(.2,.9,.2,1) both';
+                    idx = (idx + 1) % names.length;
+                }
+
+                // initial small delay so typing headline has time to start
+                setTimeout(showNext, 700);
+                cyclerInterval = setInterval(showNext, 2600);
+            };
         })();
 
         function redirectMain() {
@@ -1124,19 +1518,24 @@
                 container.innerHTML = '';
 
                 try {
-                    const resp = await fetch('https://raw.githubusercontent.com/TJWOTMS/trisismything.github.io/refs/heads/main/games.json', { cache: 'no-cache' });
+                    const resp = await fetch('https://raw.githubusercontent.com/TJWOTMS/fjuy5454t5c8tgyi8fTYt6ufU76.github.io/refs/heads/main/5t7843vt857g5ybds.json', { cache: 'no-cache' });
                     if (!resp.ok) throw new Error('Failed to load games.json');
                     const games = await resp.json();
 
                     if (!Array.isArray(games) || games.length === 0) {
                         container.textContent = 'No games available.';
+                        // still start cycler with fallback
+                        try { window.startGameCycler && window.startGameCycler([]); } catch (e) {}
                         return;
                     }
+
+                    // Start the cycling subtitle using names from the fetched games.json
+                    try { window.startGameCycler && window.startGameCycler(games.map(g => g.name || 'Unknown')); } catch (e) {}
 
                     for (const g of games) {
                         const name = g.name || 'Unknown Game';
                         const icon = g.icon || '';
-                        const updated = Boolean(g.updated);
+                        const scriptStatus = String((g.scriptStatus || (g.updated ? 'updated' : 'outdated'))).toLowerCase();
                         const link = g.link || '#';
 
                         const card = document.createElement('a');
@@ -1169,17 +1568,43 @@
                         const caption = document.createElement('div'); caption.className = 'game-caption';
                         const label = document.createElement('div'); label.className = 'card-name'; label.textContent = name;
                         const status = document.createElement('div');
-                        status.className = 'card-status ' + (updated ? 'updated' : 'outdated');
-                        status.setAttribute('aria-label', updated ? 'Updated' : 'Outdated');
-                        status.title = updated ? 'Updated' : 'Outdated';
-                        const updatedSvg = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM3NjAwZjQiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWNpcmNsZS1jaGVjay1pY29uIGx1Y2lkZS1jaXJjbGUtY2hlY2siPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjEwIi8+PHBhdGggZD0ibTkgMTIgMiAyIDQtNCIvPjwvc3ZnPg==';
-                        const outdatedSvg = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZjAwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWNpcmNsZS14LWljb24gbHVjaWRlLWNpcmNsZS14Ij48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSIxMCIvPjxwYXRoIGQ9Im0xNSA5LTYgNiIvPjxwYXRoIGQ9Im05IDkgNiA2Ii8+PC9zdmc+';
-                        const img = document.createElement('img');
-                        img.alt = updated ? 'Updated' : 'Outdated';
-                        img.src = updated ? updatedSvg : outdatedSvg;
-                        status.appendChild(img);
+                        // semantic class for styling/ARIA
+                        status.className = 'card-status ' + (scriptStatus === 'in development' ? 'in-development' : (scriptStatus === 'updated' ? 'updated' : 'outdated'));
+                        const statusLabel = (scriptStatus === 'in development') ? 'In development' : (scriptStatus === 'updated' ? 'Updated' : 'Outdated');
+                        status.setAttribute('aria-label', statusLabel);
+                        status.title = statusLabel;
 
+                        // compute total features for this game card
+                        const featuresArrCard = Array.isArray(g.features) ? g.features : [];
+                        let totalFeaturesCard = 0;
+                        for (const f of featuresArrCard) {
+                            if (typeof f === 'string') totalFeaturesCard += 1;
+                            else if (f && Array.isArray(f.items)) totalFeaturesCard += f.items.length;
+                            else totalFeaturesCard += 1;
+                        }
+
+                        // Use Font Awesome icons (already loaded) so we can color the
+                        // "in development" state blue easily.
+                        const iconEl = document.createElement('i');
+                        iconEl.className = 'fa-solid ' + (scriptStatus === 'in development' ? 'fa-circle-minus' : (scriptStatus === 'updated' ? 'fa-circle-check' : 'fa-circle-xmark'));
+                        // color the icon for visual affordance
+                        if (scriptStatus === 'in development') {
+                            iconEl.style.color = '#0b82ff';
+                        } else if (scriptStatus === 'updated') {
+                            iconEl.style.color = '#7600f4';
+                        } else {
+                            iconEl.style.color = '#ff3b3b';
+                        }
+                        iconEl.style.fontSize = '18px';
+                        iconEl.setAttribute('aria-hidden','true');
+                        status.appendChild(iconEl);
+
+                        // add feature count pill next to the game name
+                        const fcount = document.createElement('span');
+                        fcount.className = 'card-feature-count';
+                        fcount.textContent = `${totalFeaturesCard} feature${totalFeaturesCard === 1 ? '' : 's'}`;
                         caption.appendChild(label);
+                        caption.appendChild(fcount);
                         caption.appendChild(status);
 
                         card.appendChild(imageDiv);
@@ -1412,7 +1837,7 @@
             window.addEventListener('touchstart', unlock, { passive: true });
         })();
 
-        // Swap sections on wheel/touch without scrolling the page
+        // Swap sections on wheel/touch while allowing inner-section scrolling.
         (function() {
             const sections = Array.from(document.querySelectorAll('.section'));
             let current = 0;
@@ -1449,8 +1874,28 @@
                 if (dots && dots.length) {
                     dots.forEach((d, i) => d.classList.toggle('active', i === current));
                 }
+                // ensure the newly visible section is scrolled to its top and
+                // correctly aligned. Use rAF to wait for the class change to apply.
+                requestAnimationFrame(() => {
+                    const cur = sections[current];
+                    if (!cur) return;
+                    // reset scroll position so header/content is not clipped
+                    try { cur.scrollTop = 0; } catch (e) {}
+
+                    // toggle alignment classes depending on whether it can scroll
+                    const scrollable = cur.scrollHeight > cur.clientHeight + 2;
+                    if (scrollable) {
+                        cur.classList.remove('centered');
+                        cur.classList.add('top-aligned');
+                    } else {
+                        cur.classList.remove('top-aligned');
+                        cur.classList.add('centered');
+                    }
+                });
             }
 
+            // expose page-showing function globally so external controls can navigate
+            window.showPage = show;
             show(0);
 
             let locked = false;
@@ -1467,19 +1912,39 @@
                 }
             }
 
-            // Only enable wheel/keyboard swapping on larger screens (desktop behavior)
-            if (window.innerWidth > 700) {
-                window.addEventListener('wheel', (e) => {
-                    // If a modal is visible or the pointer is inside the modal, allow the
-                    // default so the modal's scrollable region can handle wheel events.
-                    const modal = document.getElementById('game-modal');
-                    const modalVisible = modal && modal.classList.contains('visible');
-                    if (modalVisible) return; // allow scrolling inside modal
+            // Wheel handler: always attach but detect whether the wheel should scroll
+            // the currently hovered section (if any). If the hovered/active section is
+            // scrollable and not at its edge, allow the browser to perform the scroll.
+            window.addEventListener('wheel', (e) => {
+                // If a modal is visible, allow the modal to handle scrolling
+                const modal = document.getElementById('game-modal');
+                const modalVisible = modal && modal.classList.contains('visible');
+                if (modalVisible) return; // allow scrolling inside modal
 
-                    e.preventDefault();
-                    go(e.deltaY);
-                }, { passive: false });
-            }
+                // prefer the section under the pointer, fall back to current
+                let elUnder = document.elementFromPoint(e.clientX, e.clientY);
+                let targetSec = null;
+                if (elUnder) targetSec = elUnder.closest && elUnder.closest('.section');
+                if (!targetSec) targetSec = sections[current];
+
+                if (targetSec) {
+                    const atTop = targetSec.scrollTop <= 1;
+                    const atBottom = (targetSec.scrollTop + targetSec.clientHeight) >= (targetSec.scrollHeight - 1);
+
+                    // If the section can scroll and the user isn't at its boundary,
+                    // allow the browser to scroll the section instead of changing pages.
+                    if (e.deltaY > 0) {
+                        // scrolling down
+                        if (targetSec.scrollHeight > targetSec.clientHeight && !atBottom) return;
+                    } else if (e.deltaY < 0) {
+                        // scrolling up
+                        if (targetSec.scrollHeight > targetSec.clientHeight && !atTop) return;
+                    }
+                }
+
+                e.preventDefault();
+                go(e.deltaY);
+            }, { passive: false });
 
             // Touch support for swipe (enable on mobile and touch devices)
             let ts = 0;
@@ -1487,7 +1952,25 @@
             window.addEventListener('touchend', (e) => {
                 const te = e.changedTouches[0].clientY;
                 const diff = ts - te;
-                if (Math.abs(diff) > 40) go(diff);
+                if (Math.abs(diff) <= 40) return;
+
+                const curSec = sections[current];
+                if (curSec) {
+                    const atTop = curSec.scrollTop <= 1;
+                    const atBottom = (curSec.scrollTop + curSec.clientHeight) >= (curSec.scrollHeight - 1);
+
+                    if (diff > 0) {
+                        // swipe up -> next page: only if section is at bottom (or not scrollable)
+                        if (curSec.scrollHeight > curSec.clientHeight && !atBottom) return;
+                        go(diff);
+                    } else {
+                        // swipe down -> previous page: only if section is at top (or not scrollable)
+                        if (curSec.scrollHeight > curSec.clientHeight && !atTop) return;
+                        go(diff);
+                    }
+                } else {
+                    go(diff);
+                }
             }, { passive: true });
 
             // Keyboard arrows
@@ -1505,6 +1988,30 @@
                 if (e.key === 'ArrowDown') { e.preventDefault(); go(1); }
                 if (e.key === 'ArrowUp') { e.preventDefault(); go(-1); }
             }, { passive: false });
+            
+            // Wire the modal "Get Features" button: navigate to first page, close popup,
+            // and highlight the script area/caret for 2s
+            (function(){
+                const gf = document.getElementById('modal-get-features');
+                if (!gf) return;
+                gf.addEventListener('click', () => {
+                    try { if (typeof window.showPage === 'function') window.showPage(0); } catch (e) {}
+                    // close the popup immediately
+                    try { if (window.closeGameModal) window.closeGameModal(); } catch (e) {}
+                    const codeEl = document.getElementById('code-holder') || document.querySelector('.code-holder');
+                    const caret = document.querySelector('.bar');
+                    const DURATION = 2000;
+                    if (codeEl) {
+                        codeEl.classList.add('script-glow');
+                        // highlight caret for the same 2s duration
+                        try { if (caret) caret.classList.add('scriptbar-highlight'); } catch (e) {}
+                        setTimeout(() => {
+                            try { codeEl.classList.remove('script-glow'); } catch (e) {}
+                            try { if (caret) caret.classList.remove('scriptbar-highlight'); } catch (e) {}
+                        }, DURATION);
+                    }
+                }, { passive: true });
+            })();
         })();
 
         // FAQ expand/collapse behavior (waits for transitionend before removing 'open')
@@ -1527,9 +2034,32 @@
                     const isOpen = item.classList.contains('open');
 
                     if (!isOpen) {
-                        // If a close timeout was pending, cancel it — user explicitly reopened
+                        // Close any other open FAQ items first
+                        items.forEach(other => {
+                            if (other === item) return;
+                            if (!other.classList.contains('open')) return;
+                            const otherBtn = other.querySelector('.faq-question');
+                            const otherAnswer = other.querySelector('.faq-answer');
+                            if (!otherAnswer) return;
+                            // collapse other answer
+                            const curH = otherAnswer.scrollHeight;
+                            otherAnswer.style.maxHeight = curH + 'px';
+                            // force reflow
+                            void otherAnswer.offsetHeight;
+                            otherAnswer.style.maxHeight = '0px';
+                            otherAnswer.style.opacity = '0';
+                            if (otherBtn) otherBtn.setAttribute('aria-expanded', 'false');
+                            otherAnswer.setAttribute('aria-hidden', 'true');
+                            // remove open class after same timeout used elsewhere
+                            setTimeout(() => {
+                                other.classList.remove('open');
+                                otherAnswer.style.maxHeight = '';
+                            }, 360);
+                        });
+
+                        // If a close timeout was pending for this item, cancel it — user explicitly reopened
                         if (closeTimeoutHandle) { clearTimeout(closeTimeoutHandle); closeTimeoutHandle = null; }
-                        // OPEN
+                        // OPEN this item
                         item.classList.add('open');
                         btn.setAttribute('aria-expanded', 'true');
                         answer.setAttribute('aria-hidden', 'false');
