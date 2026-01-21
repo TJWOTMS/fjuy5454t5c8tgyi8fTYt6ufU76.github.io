@@ -19,62 +19,10 @@
     "icon": "https://tr.rbxcdn.com/180DAY-c929c9ba9069190914f60bbfe47b6cb9/768/432/Image/Webp/noFilter",
     "updated": true,
     "features": [
-      
-      { "title": "ESP & Visuals", "items": [
-        { "name": "Player ESP", "desc": "Show player names, roles, health and distances through walls." },
-        { "name": "Dropped Gun ESP", "desc": "Highlight dropped guns with distance readout and tracers." },
-        { "name": "Tracers", "desc": "Draw tracers to players or objects from configurable positions." },
-        { "name": "Boxes / Corners", "desc": "Draw square or corner boxes around players with outlines." },
-        { "name": "Health Bar", "desc": "Show a vertical health bar next to player boxes." },
-        { "name": "Highlight", "desc": "Add highlight adorners with configurable fill/outline transparency." },
-        { "name": "ESP Options", "desc": "Toggle names, roles, health text, distance, tracer thickness and max distance." }
-      ] },
-      { "title": "Player Features", "items": [
-        { "name": "Fly", "desc": "Fly in any direction with configurable speed and mobile support." },
-        { "name": "Noclip", "desc": "Disable collisions to move through geometry." },
-        { "name": "Infinite Jump", "desc": "Allow repeated jumping without touching the ground." },
-        { "name": "Walkspeed / JumpPower", "desc": "Adjust movement speed and jump power with sliders." },
-        { "name": "Disable Void", "desc": "Prevent falling into the void by teleporting to safe Y-levels." },
-        { "name": "Anti-Fling", "desc": "Attempt to neutralize fling attacks from other players." }
-      ] },
-      { "title": "Murderer Features", "items": [
-        { "name": "Kill Aura", "desc": "Automatically attempt melee kills on nearby players when holding the knife." },
-        { "name": "Kill All", "desc": "Attempt to stab all non-lobby players by moving them into melee range." },
-        { "name": "Target Kill", "desc": "Select a player and attempt a single targeted kill." }
-      ] },
-      { "title": "Sheriff Features", "items": [
-        { "name": "Auto TP to Gun", "desc": "Briefly teleport to nearby gun drops to pick up the gun automatically." },
-        { "name": "Auto Shoot Murderer", "desc": "Attempt to automatically shoot the murderer using prediction and optional legit checks." },
-        { "name": "Auto Shoot Mode", "desc": "Switch between 'Blatant' and 'Legit' firing behaviors for different aggression levels." },
-        { "name": "Kill Murderer", "desc": "Attempt a focused shot or server-side fire to eliminate the murderer." }
-      ] },
-      { "title": "Fling", "items": [
-        { "name": "Player Fling", "desc": "Flings an targeted player chosen in the dropdown." },
-        { "name": "Fling Targeting", "desc": "Choose a player target from a dropdown and refresh the player list." },
-        { "name": "Stop Fling", "desc": "Stop any ongoing fling thread instantly." },
-        { "name": "Fling Prediction", "desc": "Adjust prediction/prediction time used when computing fling positions." }
-      ] },
-      { "title": "Farming", "items": [
-        { "name": "Coin Autofarm", "desc": "Tween to coins and collect them automatically; includes lobby-safe freezing." },
-        { "name": "Tween Speed", "desc": "Set the speed (studs/sec) used when tweening to coins." }
-      ] },
-      { "title": "World & Environment", "items": [
-        { "name": "Fullbright", "desc": "Force bright ambient lighting for improved visibility." },
-        { "name": "No Fog", "desc": "Disable fog and other atmospheric effects." },
-        { "name": "Custom FOV", "desc": "Set a custom camera FOV value while enabled." }
-      ] },
-      { "title": "Roles & Notifications", "items": [
-        { "name": "Role Tracking", "desc": "Track murderer/sheriff/hero and display them in the UI." },
-        { "name": "Role Notify", "desc": "Notify (UI or chat) when roles are assigned at round start." }
-      ] },
-      { "title": "UI & Misc", "items": [
-        { "name": "Toggle Sounds", "desc": "Enable or disable toggle/notify sounds in the UI." },
-        { "name": "Debug Mode", "desc": "Enable debug logging and notify events for troubleshooting." },
-        { "name": "Unload Script", "desc": "Safely unload the script and restore default settings." }
-      ] }
+      { "title": "WIP", "items": [ { "name": "WIP", "desc": "WIP" } ] }
     ],
-    "scriptStatus": "updated",
-    "link": "#"
+    "scriptStatus": "in development",
+    "link": "https://www.roblox.com/games/142823291/Murder-Mystery-2"
   }
   ,
   {
@@ -89,7 +37,17 @@
         { "name": "Infinite Jump", "desc": "Allow repeated jumps without falling." }
       ] }
     ],
-    "scriptStatus": "updated",
-    "link": "#"
+    "scriptStatus": "in development",
+    "link": "https://www.roblox.com/games/18687417158/Forsaken"
+  }
+  ,
+  {
+    "slug": "tha-bronx-3",
+    "name": "Tha Bronx 3",
+    "icon": "https://tris.rocks/thabronx3.png",
+    "updated": false,
+    "features": [],
+    "scriptStatus": "in development",
+    "link": "https://www.roblox.com/games/16472538603/THA-BRONX-3"
   }
 ]
