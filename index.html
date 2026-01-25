@@ -5,9 +5,7 @@
     <title>tris.rocks</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Font Awesome icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-    <!-- JetBrains Mono font -->
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
@@ -26,9 +24,8 @@
             justify-content: center;
         }
 
-        /* TEXT CONTAINER */
         h1 {
-            font-size: 56px; /* fixed size to keep consistent across devices */
+            font-size: 56px;
             margin-bottom: 40px;
             letter-spacing: 2px;
             position: relative;
@@ -38,14 +35,11 @@
         .tris { color: #7600f4; }
         .rocks { color: white; }
 
-        /* persistent glow for the 'tris' text; hover strengthens it */
         .tris {
             color: #7600f4;
-            /* base glow */
             text-shadow: 0 0 10px rgba(118,0,244,0.65), 0 0 24px rgba(118,0,244,0.18);
             transition: text-shadow 220ms ease, transform 180ms ease;
             will-change: text-shadow, transform;
-            /* gentle pulsing glow */
             animation: trisGlow 2400ms ease-in-out infinite alternate;
         }
         @keyframes trisGlow {
@@ -65,7 +59,6 @@
             cursor: default;
         }
 
-        /* CURSOR / CARET */
         .bar {
             display: inline-block;
             width: 3px;
@@ -74,7 +67,6 @@
             margin-left: 0;
             vertical-align: text-bottom;
             opacity: 1;
-            /* subtle persistent purple glow for the caret */
             box-shadow: 0 0 10px rgba(118,0,244,0.75), 0 0 24px rgba(118,0,244,0.18), 0 0 0 4px rgba(118,0,244,0.08);
             transition: box-shadow 220ms ease, transform 180ms ease;
             will-change: box-shadow, transform;
@@ -89,7 +81,6 @@
             animation: blink 2s steps(2, start) infinite;
         }
 
-        /* caret highlight used for the final 2s when Get Features is triggered */
         .bar.scriptbar-highlight {
             animation: caretHighlight 2s ease-in-out both;
             box-shadow: 0 0 26px rgba(118,0,244,0.98), 0 0 56px rgba(118,0,244,0.28) !important;
@@ -102,7 +93,6 @@
             100% { opacity: 1; box-shadow: 0 0 12px rgba(118,0,244,0.75); transform: scaleX(1); }
         }
 
-        /* MAIN BUTTON */
         .main-button {
             padding: 15px 45px;
             font-size: 1.1rem;
@@ -118,12 +108,11 @@
             transform: scale(1.03);
         }
 
-        /* Code holder styles */
         .code-holder {
             display: flex;
             align-items: center;
             gap: 12px;
-            /* match FAQ frosted glass exactly */
+            
             background: rgba(255,255,255,0.02) !important;
             -webkit-backdrop-filter: blur(10px) saturate(140%) !important;
             backdrop-filter: blur(10px) saturate(140%) !important;
@@ -133,6 +122,9 @@
             box-shadow: none !important;
             transition: background 220ms ease, border-color 180ms ease, transform 180ms ease;
         }
+
+          .section.hero .code-holder { margin-top: -12px; }
+        @media (max-width: 720px) { .section.hero .code-holder { margin-top: 10px; } }
 
         .code-holder pre {
             margin: 0;
@@ -151,7 +143,6 @@
             border-radius: 0;
             cursor: pointer;
             transition: background 0.15s ease, box-shadow 160ms ease, transform 160ms ease, border-color 160ms ease;
-            /* match site font exactly */
             font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
             font-weight: 700;
             text-transform: none;
@@ -164,7 +155,6 @@
 
         .code-holder:hover, .code-holder:focus-within { box-shadow: 0 18px 48px rgba(118,0,244,0.16); border-color: rgba(118,0,244,0.95); }
 
-        /* When hovering the script area, make the Copy button match the outline color/glow */
         .code-holder:hover .copy-btn,
         .code-holder:focus-within .copy-btn {
             background: linear-gradient(90deg, rgba(118,0,244,0.14), rgba(118,0,244,0.06));
@@ -173,7 +163,6 @@
             transform: translateY(-2px) scale(1.02);
         }
 
-        /* temporary glow applied when features are requested (10s) */
         .code-holder.script-glow {
             animation: scriptGlow 1000ms ease-in-out infinite alternate;
             border-color: rgba(118,0,244,0.95) !important;
@@ -185,14 +174,12 @@
             to   { box-shadow: 0 26px 60px rgba(118,0,244,0.36), 0 0 64px rgba(118,0,244,0.26); }
         }
 
-        /* ICON LINKS */
         .bottom-buttons {
             display: flex;
             gap: 35px;
             align-items: center;
         }
 
-        /* Fixed footer container for social icons */
         .fixed-footer {
             position: fixed;
             left: 0;
@@ -224,7 +211,6 @@
 
         a { text-decoration: none; }
 
-        /* Sections for scroll transitions */
         .section {
             position: fixed;
             inset: 0;
@@ -239,18 +225,17 @@
             transform: translateY(20px);
             transition: opacity 0.6s ease, transform 0.6s ease;
             pointer-events: none;
-            /* allow section content to scroll when taller than viewport */
+            
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
-            /* hide native scrollbars but keep scrolling functional */
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE 10+ */
+            scrollbar-width: none;
+            -ms-overflow-style: none; 
         }
 
-        /* WebKit browsers: hide the scrollbar track/thumb for sections */
+        
         .section::-webkit-scrollbar { width: 0; height: 0; }
 
-        /* Page indicator dots (left side) */
+        
         #page-dots {
             position: fixed;
             left: 18px;
@@ -289,20 +274,20 @@
             z-index: 2;
         }
 
-        /* Helper classes: center short sections, top-align long/scrollable ones */
+        
         .section.centered { justify-content: center; }
         .section.top-aligned { justify-content: flex-start; }
 
-        /* Hide visible scrollbars for page sections while preserving scroll behavior */
+        
         body {
-            -ms-overflow-style: none; /* IE and Edge */
-            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; 
+            scrollbar-width: none; 
         }
         body::-webkit-scrollbar { width: 0; height: 0; }
 
         .section {
-            -ms-overflow-style: none; /* IE and Edge */
-            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; 
+            scrollbar-width: none; 
         }
         .section::-webkit-scrollbar { display: none; width: 0; height: 0; }
 
@@ -322,7 +307,7 @@
             margin-bottom: 28px;
         }
 
-        /* Background video */
+        
         #bg-video {
             position: fixed;
             inset: 0;
@@ -332,10 +317,10 @@
             opacity: 0.5;
             pointer-events: none;
             z-index: -1;
-            /* Avoid transforms on the video element (can interfere with touch/scroll on mobile) */
+            
             transform: none;
             -webkit-transform: none;
-            /* Allow vertical pan gestures to pass through */
+            
             touch-action: pan-y;
         }
 
@@ -353,9 +338,9 @@
             font-size: 1.05rem;
         }
 
-        /* Subtitle under main header (cycles game names) */
+        
         .subtitle {
-            margin-top: 2px; /* moved slightly higher under the main title */
+            margin-top: 2px; 
             color: #bfbfbf;
             font-size: 1.05rem;
             display: flex;
@@ -365,7 +350,7 @@
             opacity: 0;
             transform: translateY(6px);
             animation: subtitleIn 600ms cubic-bezier(.2,.9,.2,1) forwards;
-            /* allow dynamic width to fit the current game name */
+            
             min-width: 0;
             width: auto;
         }
@@ -379,19 +364,22 @@
             will-change: transform, opacity;
             transition: transform 260ms cubic-bezier(.2,.9,.2,1), opacity 260ms ease, font-size 220ms ease, text-shadow 260ms ease;
             text-align: center;
-            /* let the text size dictate width so it stays centered under the heading */
+            
             min-width: 0;
             width: auto;
-            /* subtle persistent glow for the game name */
+            
             text-shadow: 0 0 12px rgba(118,0,244,0.75), 0 0 30px rgba(118,0,244,0.18);
             will-change: transform, opacity, text-shadow;
         }
+
+        
+        .subtitle.fallback-visible { opacity: 1 !important; transform: none !important; }
 
         @keyframes subtitleIn {
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Animation applied when a game name cycles in/out */
+        
         .subtitle-game.cycle {
             animation: gameCycle 2400ms cubic-bezier(.2,.9,.2,1) both;
         }
@@ -403,7 +391,7 @@
                     100% { opacity: 0; transform: translateY(-10px) scale(.96); text-shadow: 0 0 6px rgba(118,0,244,0.35); }
         }
 
-                /* Respect user preference to reduce motion */
+                
                 @media (prefers-reduced-motion: reduce) {
                     .subtitle, .subtitle-game { animation: none !important; transition: none !important; }
                 }
@@ -413,11 +401,11 @@
             to { background-position: -60px 0; }
         }
 
-        /* Supported games list */
+        
         .games-section {
             margin-top: 22px;
             width: min(1100px, 95%);
-            /* remove outer outline (we'll use purple outline on cards instead) */
+            
             border: none;
             padding: 12px;
             background: transparent;
@@ -433,11 +421,11 @@
         .games-note .squiggle {
             position: relative;
             display: inline-block;
-            /* remove the original text-decoration squiggle — keep only the animated SVG wave */
+            
             text-decoration: none !important;
-            padding-bottom: 6px; /* give room for the animated wave */
+            padding-bottom: 6px; 
             text-shadow: none !important;
-            z-index: 1; /* put text above the animated wave */
+            z-index: 1; 
         }
 
         .games-note .squiggle::after {
@@ -448,10 +436,10 @@
             bottom: 0;
             height: 10px;
             pointer-events: none;
-            /* repeating SVG wave as background so it can animate across width */
+            
             background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='12' viewBox='0 0 120 12'><path d='M0 6 C10 0 20 12 30 6 C40 0 50 12 60 6 C70 0 80 12 90 6 C100 0 110 12 120 6' stroke='%237600f4' stroke-width='2.4' fill='none' stroke-linecap='round' /></svg>");
             background-repeat: repeat-x;
-            /* smaller background-size gives more repeats (higher frequency) */
+            
             background-size: 60px 12px;
             filter: blur(3.5px);
             opacity: 0.95;
@@ -461,10 +449,10 @@
             animation: squiggleMove 2.4s linear infinite;
         }
         .games-header { color: #fff; font-size: 1.2rem; margin-bottom: 6px; }
-        /* Center the games and allow wrapping so they sit in the middle based on count */
+        
         .games-list { display: flex; gap: 16px; justify-content: center; align-items: center; flex-wrap: wrap; padding-bottom: 8px; -webkit-overflow-scrolling: touch; }
 
-        /* Developer cards (reused visual language from game cards) */
+        
         .dev-cards { display:flex; gap:16px; justify-content:center; align-items:stretch; flex-wrap:wrap; margin-top:12px; }
         .dev-card {
             width: 360px;
@@ -494,7 +482,7 @@
         .dev-name { color: #fff; font-weight:900; font-size:1.05rem; }
         .dev-role { color: #d9d2ff; font-weight:700; font-size:0.95rem; }
 
-        /* Discord icon inside card (bottom-left) */
+        
         .dev-discord {
             position: absolute;
             left: 10px;
@@ -513,7 +501,7 @@
         }
         .dev-discord .fa-discord { pointer-events: none; }
 
-        /* Hover and focus for the discord icon itself (glow, no outline/border change) */
+        
         .dev-discord:hover {
             box-shadow: 0 12px 40px rgba(118,0,244,0.28);
             color: #fff;
@@ -527,28 +515,28 @@
             border-color: transparent;
         }
 
-        /* Glow on hover for outlined elements */
+        
         .code-holder:hover, .game-card:hover, .faq-item:hover, .dev-card:hover, .modal-card:hover, .game-image:hover, .copy-btn:hover, .top-btn:hover, .card-status:hover, .modal-thumb:hover {
             border-color: rgba(118,0,244,0.95) !important;
             box-shadow: 0 12px 48px rgba(118,0,244,0.16), 0 0 32px rgba(118,0,244,0.22) !important;
             transform: translateZ(0) scale(1.01);
         }
-        /* Make discord icon glow when its card is hovered */
+        
         .dev-card:hover .dev-discord {
             box-shadow: 0 12px 44px rgba(118,0,244,0.28);
             color: #fff;
             border-color: transparent;
         }
 
-        /* Thumbnail-style game cards */
+        
         .game-card {
             width: 320px;
-            /* allow height to size to content so caption sits below the image */
+            
             height: auto;
-            /* remove rounding */
+            
             border-radius: 0;
             position: relative;
-            /* match FAQ frosted glass exactly */
+            
             background: rgba(255,255,255,0.02) !important;
             -webkit-backdrop-filter: blur(10px) saturate(140%) !important;
             backdrop-filter: blur(10px) saturate(140%) !important;
@@ -571,9 +559,9 @@
             box-shadow: none !important;
             border-color: rgba(255,255,255,0.06);
         }
-        /* Image area (no fade). Use contain so whole icon is visible; ensure it's big enough */
+        
         .game-image {
-            /* original gamebox image area size */
+            
             height: 180px;
             background-size: cover;
             background-position: center;
@@ -582,7 +570,7 @@
             background-color: transparent;
             flex: none;
         }
-        /* Box below the image containing name and status - size to content */
+        
         .game-caption {
             display: flex;
             align-items: center;
@@ -596,7 +584,7 @@
         .game-caption .card-name { color: #fff; }
         .card-name { color: #fff; font-weight: 700; text-shadow: 0 2px 6px rgba(0,0,0,0.6); flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .card-status {
-            /* use an image only for status; remove box/colour styles */
+            
             padding: 0;
             border: none;
             background: transparent;
@@ -618,21 +606,23 @@
             font-size: 0.8rem;
             line-height: 1;
             margin-left: 8px;
-            border: 1px solid rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08); 
+            white-space: nowrap; 
+            flex: 0 0 auto;
         }
         .card-status img { display: block; width: 24px; height: 24px; }
-        /* semantic classes for card-status exist for ARIA/title but need no CSS rules */
+        
 
         @media (max-width: 700px) {
             .games-list { gap: 12px; justify-content: space-between; }
-            /* Two-up responsive cards on most phones */
+            
             .game-card { width: calc(50% - 10px); flex: 0 0 calc(50% - 10px); height: auto; border-radius: 0; }
             .game-image { height: 140px; }
             .game-caption { padding: 6px 8px; }
             .card-name { font-size: 0.95rem; }
             .card-status { padding: 4px 8px; font-size: 0.85rem; }
         }
-        /* Very narrow phones: single-column cards to avoid scaling issues */
+        
         @media (max-width: 420px) {
             .games-list { gap: 10px; justify-content: center; }
             .game-card { width: 100%; flex: 0 0 100%; }
@@ -642,18 +632,18 @@
         }
         .games-actions { display:flex; gap:8px; margin-top:8px; justify-content:flex-end; }
 
-        /* Mobile adjustments */
+        
         @media (max-width: 700px) {
-            /* On small screens keep everything centered and allow scrolling when content is large */
+            
             body { overflow: auto; height: 100vh; }
-            /* hide body scrollbars visually (preserve modal custom scrollbars) */
+            
             body { scrollbar-width: none; -ms-overflow-style: none; }
             body::-webkit-scrollbar { width: 0; height: 0; }
             .section {
                 position: fixed;
                 inset: 0;
                 height: 100vh;
-                /* reserve space for the phone-sized top buttons + safe area */
+                
                 padding: calc(12px + env(safe-area-inset-top, 0px) + 64px) 12px calc(20px + var(--footer-height));
                 display: flex;
                 flex-direction: column;
@@ -667,14 +657,14 @@
             .main-button { padding: 10px 22px; font-size: 1rem; }
             .fixed-footer { padding: 10px 12px; --footer-height: 60px; }
             :root { --footer-height: 60px; }
-            /* Make sure background video stays behind content on mobile */
+            
             #bg-video { opacity: 0.45; }
-            /* Developer card adjustments on small screens */
+            
             .dev-card { width: 92%; padding: 18px 18px 64px 18px; }
             .dev-avatar { width: 80px; height: 80px; right: 12px; top: 12px; }
             .dev-discord { left: 10px; bottom: 10px; }
         }
-        /* Top-right buttons: Documentation and Key System */
+        
         #top-right-buttons {
             position: fixed;
             top: 18px;
@@ -702,12 +692,12 @@
             box-shadow: 0 6px 18px rgba(0,0,0,0.45);
             font-weight: 700;
         }
-        /* Top button icon styling (Font Awesome). Hide icons on large screens, show on small screens. */
+        
         .top-btn i.fa { display: none; width: 18px; height: 18px; line-height: 1; }
         .top-btn .btn-text { display: inline-block; }
         .top-btn:active { transform: translateY(1px); }
 
-        /* The Key System button glows purple */
+        
         .top-btn.glow {
             background: linear-gradient(90deg, rgba(118,0,244,0.14), rgba(118,0,244,0.06));
             border-color: rgba(118,0,244,0.85);
@@ -718,15 +708,13 @@
         .top-btn:hover { transform: translateY(-2px) scale(1.02); }
 
         @media (max-width: 560px) {
-            /* Keep top-right quick-action buttons visible on small screens.
-               Make them stretch as two large buttons across the top and
-               show only the Font Awesome icon while hiding the text label. */
+            
             #top-right-buttons { left: 0; right: 0; top: 0; display: flex; gap: 6px; justify-content: center; padding: 8px; box-sizing: border-box; }
             .top-btn { flex: 1 1 50%; padding: 12px 10px; font-size: 1rem; }
             .top-btn i.fa { display: inline-block; }
             .top-btn .btn-text { display: none; }
         }
-        /* Game details modal (glass-like) */
+        
         @keyframes modalPop {
             from { opacity: 0; transform: translateY(12px) scale(0.985); }
             to   { opacity: 1; transform: translateY(0) scale(1); }
@@ -736,7 +724,7 @@
         .modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.55); }
         .modal-card {
             position: relative;
-            /* narrower width so modal does not dominate the whole screen */
+            
             width: min(920px, 92%);
             max-width: 920px;
             background: rgba(18,18,18,0.65);
@@ -753,9 +741,9 @@
             align-items: stretch;
             animation: modalPop 320ms cubic-bezier(.2,.9,.2,1);
             transform-origin: center center;
-            /* prevent the modal from taking the entire viewport height */
+            
             max-height: 80vh;
-            overflow: hidden; /* content scrolls inside the features area */
+            overflow: hidden; 
         }
         .modal-close {
             position: absolute; right: 12px; top: 12px; background: transparent; border: 1px solid rgba(255,255,255,0.04);
@@ -782,18 +770,20 @@
             font-weight: 800;
             font-size: 0.85rem;
             line-height: 1;
-            margin-left: 0; /* default - no extra left margin on small screens */
-            border: 1px solid rgba(255,255,255,0.08); /* outlined look */
+            margin-left: 0; 
+            border: 1px solid rgba(255,255,255,0.08); 
             box-shadow: 0 1px 0 rgba(255,255,255,0.02) inset;
             align-self: center;
+            white-space: nowrap; 
+            flex: 0 0 auto;
         }
 
-        /* On larger viewports keep a left gap so the pill sits spaced from title */
+        
         @media (min-width: 921px) {
             .modal-feature-count { margin-left: 10px; }
         }
 
-        /* On narrow screens center the title row content */
+        
         @media (max-width: 920px) {
             .modal-title-row { justify-content: center; }
             .modal-title { text-align: center; }
@@ -806,7 +796,7 @@
             .modal-thumb-wrap { align-items:center; }
         }
 
-        /* Better alignment for feature groups/items on narrow screens */
+        
         @media (max-width: 920px) {
             .modal-feature-rows { gap: 10px; }
             .modal-feature-row { flex-direction: column; gap: 10px; }
@@ -815,22 +805,22 @@
             .modal-feature-section .feature-list { display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap; }
             .modal-features .feature { display: inline-flex; justify-content:center; align-items:center; }
             .modal-feature-section .feature-item { width: 100%; box-sizing: border-box; }
-            /* ensure modal features area has comfortable padding on phones */
+            
             #modal-features { padding: 8px 12px !important; }
         }
         .modal-features { display:flex; flex-direction:column; gap:12px; }
-        /* make the features region scrollable with a visible slider */
+        
         #modal-features, .modal-features {
-            max-height: calc(80vh - 160px); /* leave room for header and join button */
+            max-height: calc(80vh - 160px); 
             overflow-y: auto;
-            /* push scrollbar visually closer to the right edge of the popup */
+            
             padding-right: 20px;
         }
 
-        /* Custom scrollbar (WebKit) - squared thumb and slightly wider */
+        
         #modal-features::-webkit-scrollbar { width: 12px; }
         #modal-features::-webkit-scrollbar-track { background: transparent; border-radius: 0; }
-        /* Keep thumb square and the same color in all states */
+        
         #modal-features::-webkit-scrollbar-thumb,
         #modal-features::-webkit-scrollbar-thumb:hover,
         #modal-features::-webkit-scrollbar-thumb:active,
@@ -843,26 +833,26 @@
             box-shadow: none !important;
             -webkit-tap-highlight-color: transparent !important;
         }
-        /* Firefox */
+        
         #modal-features { scrollbar-width: thin; scrollbar-color: rgba(118,0,244,0.22) transparent; }
-        /* Hide modal scrollbar visually while preserving scroll behavior */
+        
         #modal-features {
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE 10+ */
+            scrollbar-width: none; 
+            -ms-overflow-style: none; 
         }
         #modal-features::-webkit-scrollbar { display: none; width: 0; height: 0; }
         .modal-features .feature { background: rgba(118,0,244,0.08); border: 1px solid rgba(118,0,244,0.16); padding:6px 10px; border-radius:3px; color:#eae6ff; font-weight:700; }
-        /* Feature groups inside modal: a titled group with a list of feature chips */
+        
         .modal-features .feature-group { display:flex; flex-direction:column; gap:8px; padding:8px; border-radius:4px; background: rgba(255,255,255,0.02); border:1px solid rgba(118,0,244,0.06); }
         .modal-features .feature-group-title { color: #fff; font-weight:800; font-size:0.95rem; }
         .modal-features .feature-group-list { display:flex; gap:8px; flex-wrap:wrap; }
         .modal-features .feature-group-list .feature { background: rgba(118,0,244,0.06); border:1px solid rgba(118,0,244,0.12); padding:6px 8px; border-radius:3px; font-weight:700; color:#eae6ff; }
 
-        /* Divider under title/status */
+        
         .modal-divider { height: 1px; background: rgba(255,255,255,0.04); margin: 6px 0 8px 0; width: 100%; }
 
-        /* Per-feature full-width sections */
-        /* Feature sections arranged into rows of two groupboxes (each ~50%) */
+        
+        
         .modal-feature-rows { display:flex; flex-direction:column; gap:12px; }
         .modal-feature-row { display:flex; gap:12px; flex-wrap:wrap; }
         .modal-feature-section { background: rgba(255,255,255,0.02); border:1px solid rgba(118,0,244,0.06); padding:12px; border-radius:4px; display:flex; flex-direction:column; gap:8px; flex: 1 1 48%; box-sizing: border-box; }
@@ -871,7 +861,7 @@
         .modal-feature-section .feature-item { background: rgba(118,0,244,0.06); border:1px solid rgba(118,0,244,0.12); padding:10px 12px; border-radius:3px; color:#eae6ff; font-weight:700; width:100%; box-sizing:border-box; display:flex; flex-direction:column; gap:6px; }
         .feature-item .feature-name { font-weight:900; color:#fff; }
         .feature-item .feature-desc { color:#d9d2ff; font-weight:600; font-size:0.95rem; }
-        /* Make the Join button behave/animate like the top-right buttons, and pin to bottom-right */
+        
         .modal-join {
             position: absolute; right: 18px; bottom: 18px; display: inline-flex; gap: 8px; align-items: center; justify-content: center;
             padding: 10px 14px; background: linear-gradient(90deg, rgba(118,0,244,0.14), rgba(118,0,244,0.06));
@@ -881,7 +871,7 @@
         .modal-join:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 34px rgba(118,0,244,0.22), 0 0 20px rgba(118,0,244,0.35); }
         .modal-join:active { transform: translateY(1px); }
 
-        /* container for bottom-right modal actions (Join + Get Features) */
+        
         .modal-actions {
             position: absolute; right: 18px; bottom: 18px; display: flex; gap: 8px; align-items: center; z-index: 6;
         }
@@ -890,8 +880,7 @@
         }
         .modal-get-features:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(118,0,244,0.10); }
 
-        /* When placed inside .modal-actions, ensure both actions are static and aligned
-           Make `Get Features` match `Join` exactly to avoid vertical offset differences */
+        
         .modal-actions .modal-join,
         .modal-actions .modal-get-features {
             position: static !important;
@@ -910,14 +899,12 @@
         .modal-actions .modal-join:hover,
         .modal-actions .modal-get-features:hover { transform: translateY(-2px) !important; }
 
-        /* Leave room for the action buttons so features list won't overlap them on small screens */
+        
         #modal-features { padding-bottom: 96px; }
 
-        /* On narrow screens stack actions under the features list and center them */
+        
         @media (max-width: 720px) {
-            /* Keep actions in-flow on mobile to preserve modal sizing.
-               Use margin and bottom padding to position them visually lower
-               without shrinking the modal content area. */
+            
             .modal-actions {
                 position: static;
                 justify-content: center;
@@ -931,8 +918,7 @@
                 z-index: 8;
                 background: transparent;
             }
-            /* Ensure features area leaves room for the actions without forcing
-               the modal to shrink. */
+            
             #modal-features { padding-bottom: 96px; }
             .modal-actions .modal-join,
             .modal-actions .modal-get-features {
@@ -956,7 +942,7 @@
             .modal-feature-row { flex-direction:column; }
             .modal-feature-section { flex: 1 1 100%; }
         }
-        /* FAQ page styles */
+        
         .faq-title { font-size: 3.2rem; color: #fff; text-transform: lowercase !important; line-height: 1.02; margin-bottom: 6px; }
         .faq-subnote {
             color: #bfbfbf;
@@ -976,7 +962,7 @@
         .faq-list { width: min(920px, 86%); color: #bfbfbf; display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
         .faq-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(118,0,244,0.08); padding: 0; border-radius: 4px; overflow: hidden; }
         .faq-question { color: #fff; font-weight: 700; width: 100%; text-align: left; background: transparent; border: 0; padding: 14px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; cursor: pointer; font-family: inherit; font-size: 1.15rem; }
-        .faq-question:focus { outline: none; box-shadow: 0 6px 24px rgba(118,0,244,0.12); }
+        .faq-question:focus { outline: none; box-shadow: none; }
         .faq-q-text { flex: 1 1 auto; text-align: left; }
         .faq-arrow { flex: 0 0 20px; display:inline-block; transform-origin: 50% 50%; transition: transform 260ms cubic-bezier(.2,.9,.2,1); color: #bfbfbf; }
         .faq-answer { color: #bfbfbf; padding: 0 16px; font-size: 1.05rem; line-height: 1.5; max-height: 0; overflow: hidden; opacity: 0; transition: max-height 300ms ease, opacity 220ms ease, padding 200ms ease; }
@@ -992,10 +978,9 @@
             .section#esp { padding-top: 100px; }
         }
 
-        /* Move the entire FAQ section content lower on desktop */
+        
         .section#esp { padding-top: 200px; }
-          /* Force zero rounding and remove shadows/filters across UI to ensure
-              a flat clean base. */
+          
           *, *::before, *::after { border-radius: 0 !important; box-shadow: none !important; text-shadow: none !important; filter: none !important; }
 
         .faq-item, .faq-question, .faq-q-text, .faq-answer, .faq-title, .faq-arrow {
@@ -1003,7 +988,7 @@
             background-image: none !important;
             -webkit-background-clip: unset !important;
             background-clip: unset !important;
-            /* remove any glowing or drop-shadow on text */
+            
             text-shadow: none !important;
             filter: none !important;
         }
@@ -1012,84 +997,91 @@
         .faq-q-text { color: #ffffff !important; }
         .faq-answer { color: #bfbfbf !important; }
 
-        /* Re-enable tris glow (global reset above disables text-shadow). */
+        
         .tris {
             text-shadow: 0 0 14px rgba(118,0,244,0.75) !important;
             animation: trisGlow 2400ms ease-in-out infinite alternate !important;
         }
-        /* Re-enable discord glow explicitly (global reset disables text-shadow). */
+        
         .glow-discord {
             text-shadow: 0 0 12px rgba(118,0,244,0.98) !important, 0 0 36px rgba(118,0,244,0.24) !important;
         }
-        /* FAQ glass — cleaner frosted glass look (inspired by modern iOS glass)
-           Keep corners square per project requirement while using backdrop blur
-           and a subtle border for depth. */
+        
         .faq-item {
             background: rgba(255,255,255,0.02) !important;
             -webkit-backdrop-filter: blur(10px) saturate(140%) !important;
             backdrop-filter: blur(10px) saturate(140%) !important;
             border: 1px solid #7600f4 !important;
             box-shadow: none !important;
-            transition: background 220ms ease, border-color 220ms ease !important;
+            transition: background 220ms ease !important;
             border-radius: 0 !important;
             overflow: hidden;
         }
 
         .faq-item.open {
-            /* Slightly stronger tint when open */
+            
             background: rgba(255,255,255,0.03) !important;
-            border-color: rgba(255,255,255,0.06) !important;
-            /* allow answer content to show fully without clipping */
+            
             overflow: visible !important;
         }
 
-        /* When open, give the answer vertical padding so it doesn't look trimmed */
+        
         .faq-item.open .faq-answer { padding: 12px 16px !important; }
 
-        /* Remove focus outline shadow on question buttons */
-        .faq-question:focus {
-            box-shadow: none !important;
-            outline: none !important;
+        
+        .faq-question:focus { box-shadow: none; outline: none; }
+
+        .faq-item {
+            box-sizing: border-box !important;
+            border-style: solid !important;
+            border-color: #7600f4 !important;
+            
+            border-width: 1px !important;
+            
+            transition: background 180ms ease !important;
         }
+
+        
+        .faq-item { position: relative !important; overflow: hidden !important; }
+
+        
+        .faq-item:focus-within, .faq-item.open { outline: none !important; }
+
+        
+        .faq-item > .faq-question, .faq-item > .faq-answer { position: relative; z-index: 0; }
     </style>
 </head>
 <body>
 
-    <!-- SCROLL SECTIONS -->
     <div class="section hero visible" id="hero">
-        <!-- TYPING TEXT -->
         <h1 id="typeText">
             <span id="text"></span><span class="bar"></span>
-            <!-- Subtitle that cycles game names (moved inside header to sit directly below) -->
+            
             <div id="subtitle" class="subtitle" aria-hidden="false">
                 <span class="subtitle-prefix" data-i18n="for">for</span>
                 <span id="gameName" class="tris subtitle-game">Jujutsu Shenanigans</span>
             </div>
         </h1>
 
-        <!-- CODE HOLDER (copyable) -->
+        
 
         <div id="code-holder" class="code-holder">
             <pre><code id="code-text">loadstring(game:HttpGet("https://tris.rocks/loader.lua"))();</code></pre>
             <button class="copy-btn" id="copy-btn" data-i18n="copy" onclick="copyCode()">Copy</button>
         </div>
 
-        <!-- ICON LINKS: footer contains social/action links -->
+        
     </div>
 
-    <!-- Top-right quick actions -->
+    
     <div id="top-right-buttons" aria-hidden="false">
-        <a href="#information" class="top-btn" role="button" aria-label="Information">
-            <i class="fa-solid fa-book" aria-hidden="true"></i>
-            <span class="btn-text" data-i18n="info">Information</span>
-        </a>
-        <a href="#key-system" class="top-btn glow" role="button" aria-label="Key System">
+        <a href="https://jnkie.com/overview/trisrocks" class="top-btn glow" role="button" aria-label="Key System">
             <i class="fa-solid fa-key" aria-hidden="true"></i>
             <span class="btn-text" data-i18n="key_system">Key System</span>
         </a>
     </div>
 
-    <!-- main content intentionally omitted -->
+    
 
     <div class="section" id="games">
         <h2 class="content-header" data-i18n="supported_games">Supported Games</h2>
@@ -1188,9 +1180,17 @@
         .fixed-footer #lang-menu button:hover { background: rgba(118,0,244,0.06); }
         .fixed-footer #lang-menu .lang-code { font-weight:900; width:36px; }
         @media (max-width:560px) { .fixed-footer #lang-label { display:none; } }
+
+        
+        @media (max-width:560px) {
+            
+            .modal-title-row { display:block; }
+            .modal-title { display:block; margin:0 0 8px 0; min-width:0; word-break:break-word; white-space:normal; }
+            .modal-feature-count, .modal-title-status { display:inline-block; vertical-align:middle; white-space:nowrap; margin:0 8px 0 0; }
+            .modal-feature-count { font-size:0.95rem; }
+        }
     </style>
 
-        <!-- Game details modal (hidden until opened) -->
         <div id="game-modal" class="game-modal" aria-hidden="true">
                 <div class="modal-backdrop" data-close></div>
             <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
@@ -1212,16 +1212,12 @@
                 </div>
             </div>
         </div>
-    <!-- Background video element (muted, plays short random snippets) -->
     <video id="bg-video" muted playsinline preload="auto" aria-hidden="true"></video>
-    <!-- Background audio (MP3) -->
     <audio id="bg-audio" preload="auto"></audio>
-    <!-- Interactive background dots canvas -->
     <canvas id="bg-dots" aria-hidden="true"></canvas>
 
     <script>
-        // Load icons dynamically when available; fall back to inline SVGs or text labels.
-        // Interactive purple dot background
+
         (function() {
             const canvas = document.getElementById('bg-dots');
             if (!canvas) return;
@@ -1242,7 +1238,7 @@
                 buildGrid();
             }
 
-            // grid of dots
+            
             let dots = [];
             function buildGrid() {
                 dots = [];
@@ -1254,10 +1250,9 @@
                 }
             }
 
-            // pointer tracking
+            
             const pointer = { x: -9999, y: -9999, last: 0 };
-            // Note: hovering the `tris` text should not boost the dot glow.
-            // The `.tris:hover` CSS already provides a text glow, so no JS toggle is needed.
+            
             function onMove(e) {
                 const p = e.touches ? e.touches[0] : e;
                 pointer.x = p.clientX;
@@ -1267,7 +1262,7 @@
             window.addEventListener('mousemove', onMove, { passive: true });
             window.addEventListener('touchmove', onMove, { passive: true });
 
-            // animation
+            
             let raf = null;
             function render() {
                 ctx.clearRect(0,0,w,h);
@@ -1275,23 +1270,23 @@
                 const time = Date.now();
                 const decay = Math.max(0, 1 - ((time - pointer.last) / 1200));
 
-                    // draw dots as SMALL SQUARES (no shadows)
+                    
                 for (let i = 0; i < dots.length; i++) {
                     const d = dots[i];
                     const dx = d.x - pointer.x;
                     const dy = d.y - pointer.y;
                     const dist = Math.sqrt(dx*dx + dy*dy);
 
-                    const influenceRadius = 220; // px
+                    const influenceRadius = 220;
                     const inf = Math.max(0, 1 - (dist / influenceRadius));
-                    // fade when pointer inactive
+                    
                     const effective = inf * decay;
 
                     const boost = 1;
                     const r = d.base + effective * (d.max - d.base) * boost;
                     const alpha = 0.06 + effective * 0.6 * boost;
 
-                    // subtle pulsing
+                    
                     const pulse = 1 + 0.12 * Math.sin((i + time*0.002) );
 
                     const size = Math.max(1, Math.round((r * pulse) * 2));
@@ -1302,21 +1297,19 @@
                 raf = requestAnimationFrame(render);
             }
 
-            // initialize
+            
             resize();
             window.addEventListener('resize', resize);
             raf = requestAnimationFrame(render);
         })();
-
-        // Ensure pages without vertical overflow are vertically centered,
-        // while scrollable pages are top-aligned so their header is visible.
+        
+        
         (function() {
             const sections = Array.from(document.querySelectorAll('.section'));
             if (!sections.length) return;
 
             function updateAlignment() {
                 sections.forEach(s => {
-                    // small tolerance to avoid off-by-one from subpixel rounding
                     const scrollable = s.scrollHeight > s.clientHeight + 2;
                     if (scrollable) {
                         s.classList.remove('centered');
@@ -1327,22 +1320,14 @@
                     }
                 });
             }
-
-            // Run on load and resize
             window.addEventListener('load', updateAlignment, { passive: true });
             window.addEventListener('resize', updateAlignment, { passive: true });
-
-            // Observe size changes inside sections (images, dynamic content)
             if (window.ResizeObserver) {
                 const ro = new ResizeObserver(updateAlignment);
                 sections.forEach(s => ro.observe(s));
             }
-
-            // initial check
             updateAlignment();
         })();
-
-        // Modal open/close helpers (populate from game object)
         (function(){
             const modal = document.getElementById('game-modal');
             const thumb = document.getElementById('modal-thumb');
@@ -1356,11 +1341,10 @@
             window.openGameModal = function(game, openerEl) {
                 if (!modal) return;
                 lastFocused = openerEl || document.activeElement;
-                // thumbnail
                 if (game.icon && thumb) thumb.style.backgroundImage = `url('${game.icon.replace(/'/g, "\\'")}')`;
                 if (title) title.textContent = game.name || 'Unknown Game';
                 const st = String((game.scriptStatus || (game.updated ? 'updated' : 'outdated'))).toLowerCase();
-                // compute total features count (sum items in groups or count strings)
+                
                 const featuresArr = Array.isArray(game.features) ? game.features : [];
                 let totalFeatures = 0;
                 for (const f of featuresArr) {
@@ -1380,16 +1364,16 @@
                     titleStatus.innerHTML = iconHtml;
                     const countEl = document.getElementById('modal-feature-count');
                     if (countEl) {
-                        countEl.textContent = `${totalFeatures} feature${totalFeatures === 1 ? '' : 's'}`;
+                        countEl.textContent = `${totalFeatures} feature`;
                         countEl.setAttribute('aria-hidden', 'true');
                     }
                 }
 
-                // features: render each entry as its own full-width section.
+                
                 if (feat) {
                     feat.innerHTML = '';
                     const features = Array.isArray(game.features) ? game.features : [];
-                    // arrange groups into rows of two groupboxes
+                    
                     const rowsContainer = document.createElement('div'); rowsContainer.className = 'modal-feature-rows';
                     if (features.length === 0) {
                         const sec = document.createElement('div'); sec.className = 'modal-feature-section';
@@ -1406,7 +1390,7 @@
                                 const f = features[idx];
                                 const sec = document.createElement('div'); sec.className = 'modal-feature-section';
 
-                                // simple string -> section with that title (single unnamed feature)
+                                
                                 if (typeof f === 'string') {
                                     const t = document.createElement('div'); t.className = 'feature-title'; t.textContent = f;
                                     sec.appendChild(t);
@@ -1414,7 +1398,7 @@
                                     continue;
                                 }
 
-                                // object -> titled group with item list
+                                
                                 if (f && typeof f === 'object') {
                                     const t = document.createElement('div'); t.className = 'feature-title'; t.textContent = f.title || '';
                                     sec.appendChild(t);
@@ -1426,7 +1410,7 @@
                                     } else {
                                         for (const it of items) {
                                             const itEl = document.createElement('div'); itEl.className = 'feature-item';
-                                            // item may be string or object {name, desc}
+                                            
                                             if (typeof it === 'string') {
                                                 const name = document.createElement('div'); name.className = 'feature-name'; name.textContent = it;
                                                 itEl.appendChild(name);
@@ -1455,7 +1439,7 @@
 
                 modal.classList.add('visible');
                 modal.setAttribute('aria-hidden','false');
-                // focus join button for keyboard users
+                
                 try { join && join.focus(); } catch (e) {}
             };
 
@@ -1466,7 +1450,7 @@
                 if (lastFocused && lastFocused.focus) try { lastFocused.focus(); } catch (e) {}
             };
 
-            // close bindings
+            
             if (closeBtn) closeBtn.addEventListener('click', () => window.closeGameModal());
             modal && modal.addEventListener('click', (e) => {
                 if (e.target && e.target.hasAttribute && e.target.hasAttribute('data-close')) {
@@ -1502,19 +1486,15 @@
         }
 
         type();
-
-        // Game name cycler: start/stop programmatically and feed names from games.json
         (function() {
             let cyclerInterval = null;
-            // names: array of strings
             window.startGameCycler = function(names) {
+                try { window._gameCyclerStarted = true; } catch(e){}
                 const el = document.getElementById('gameName');
                 if (!el) return;
                 if (!Array.isArray(names) || names.length === 0) {
                     names = ['tris rocks'];
                 }
-
-                // clear previous cycler if running
                 if (cyclerInterval) {
                     clearInterval(cyclerInterval);
                     cyclerInterval = null;
@@ -1522,36 +1502,43 @@
 
                 let idx = 0;
                 function showNext() {
-                    // remove any class-based animation to ensure inline animation restart
                     el.classList.remove('cycle');
-                    // set the text first
                     el.textContent = names[idx];
-                    // force reflow
                     void el.offsetWidth;
-                    // clear any previous inline animation then explicitly apply the gameCycle
                     el.style.setProperty('animation', 'none', 'important');
                     void el.offsetWidth;
                     el.style.setProperty('animation', 'gameCycle 2400ms cubic-bezier(.2,.9,.2,1) both', 'important');
                     idx = (idx + 1) % names.length;
                 }
-
-                // initial small delay so typing headline has time to start
                 setTimeout(showNext, 700);
                 cyclerInterval = setInterval(showNext, 2600);
             };
         })();
 
+
+        (function ensureSubtitleCycler() {
+            function tryFallback() {
+                const subtitle = document.getElementById('subtitle');
+                const gameName = document.getElementById('gameName');
+                if (!subtitle) return;
+                if (!window._gameCyclerStarted || !gameName || !String(gameName.textContent).trim()) {
+                    subtitle.classList.add('fallback-visible');
+                    try { window.startGameCycler && window.startGameCycler(['tris rocks']); } catch (e) {}
+                }
+            }
+            setTimeout(tryFallback, 900);
+            window.addEventListener('load', tryFallback, { passive: true });
+            document.addEventListener('DOMContentLoaded', tryFallback, { passive: true });
+        })();
+
         function redirectMain() {
             window.location.href = "https://example.com";
         }
-
-        // Copy code to clipboard
         function copyCode() {
             const el = document.getElementById('code-text');
             if (!el) return;
             const text = el.innerText || el.textContent;
             if (!navigator.clipboard) {
-                // fallback
                 const ta = document.createElement('textarea');
                 ta.value = text;
                 document.body.appendChild(ta);
@@ -1573,8 +1560,6 @@
             btn.innerText = 'Copied!';
             setTimeout(() => { btn.innerText = orig; }, 1400);
         }
-
-        // Supported games list - use local games.json for metadata and rendering
         (function() {
             const container = document.getElementById('games-list');
 
@@ -1589,12 +1574,9 @@
 
                     if (!Array.isArray(games) || games.length === 0) {
                         container.textContent = 'No games available.';
-                        // still start cycler with fallback
                         try { window.startGameCycler && window.startGameCycler([]); } catch (e) {}
                         return;
                     }
-
-                    // Start the cycling subtitle using names from the fetched games.json
                     try { window.startGameCycler && window.startGameCycler(games.map(g => g.name || 'Unknown')); } catch (e) {}
 
                     for (const g of games) {
@@ -1608,8 +1590,6 @@
                         card.href = link;
                         card.target = '_blank';
                         card.rel = 'noopener noreferrer';
-
-                        // create image container
                         const imageDiv = document.createElement('div');
                         imageDiv.className = 'game-image';
                         if (icon) {
@@ -1628,18 +1608,13 @@
                             placeholder.innerHTML = '<i class="fa-solid fa-gamepad"></i>';
                             imageDiv.appendChild(placeholder);
                         }
-
-                        // caption box below image
                         const caption = document.createElement('div'); caption.className = 'game-caption';
                         const label = document.createElement('div'); label.className = 'card-name'; label.textContent = name;
                         const status = document.createElement('div');
-                        // semantic class for styling/ARIA
                         status.className = 'card-status ' + (scriptStatus === 'in development' ? 'in-development' : (scriptStatus === 'updated' ? 'updated' : 'outdated'));
                         const statusLabel = (scriptStatus === 'in development') ? 'In development' : (scriptStatus === 'updated' ? 'Updated' : 'Outdated');
                         status.setAttribute('aria-label', statusLabel);
                         status.title = statusLabel;
-
-                        // compute total features for this game card
                         const featuresArrCard = Array.isArray(g.features) ? g.features : [];
                         let totalFeaturesCard = 0;
                         for (const f of featuresArrCard) {
@@ -1648,11 +1623,8 @@
                             else totalFeaturesCard += 1;
                         }
 
-                        // Use Font Awesome icons (already loaded) so we can color the
-                        // "in development" state blue easily.
                         const iconEl = document.createElement('i');
                         iconEl.className = 'fa-solid ' + (scriptStatus === 'in development' ? 'fa-circle-minus' : (scriptStatus === 'updated' ? 'fa-circle-check' : 'fa-circle-xmark'));
-                        // color the icon for visual affordance
                         if (scriptStatus === 'in development') {
                             iconEl.style.color = '#0b82ff';
                         } else if (scriptStatus === 'updated') {
@@ -1663,11 +1635,9 @@
                         iconEl.style.fontSize = '18px';
                         iconEl.setAttribute('aria-hidden','true');
                         status.appendChild(iconEl);
-
-                        // add feature count pill next to the game name
                         const fcount = document.createElement('span');
                         fcount.className = 'card-feature-count';
-                        fcount.textContent = `${totalFeaturesCard} feature${totalFeaturesCard === 1 ? '' : 's'}`;
+                        fcount.textContent = `${totalFeaturesCard} feature`;
                         caption.appendChild(label);
                         caption.appendChild(fcount);
                         caption.appendChild(status);
@@ -1675,7 +1645,6 @@
                         card.appendChild(imageDiv);
                         card.appendChild(caption);
                         container.appendChild(card);
-                        // Open modal on click (prevent default navigation)
                         card.addEventListener('click', (ev) => {
                             ev.preventDefault();
                             try { window.openGameModal && window.openGameModal(g, card); } catch (e) { console.error(e); }
@@ -1695,8 +1664,6 @@
 
             render();
         })();
-
-        // Background audio shuffling multiple MP3s
         (function() {
             const songs = [];
 
@@ -1717,36 +1684,39 @@
 
             function refillQueue() {
                 queue = shuffle(songs.slice());
-                // avoid immediate repeat
                 if (lastPlayed && queue.length > 1 && queue[0] === lastPlayed) {
                     queue.push(queue.shift());
                 }
             }
 
             function playNextSong() {
+                if (!Array.isArray(songs) || songs.length === 0) return;
+
                 if (queue.length === 0) refillQueue();
+                if (!queue || queue.length === 0) return;
+
                 const src = queue.shift();
+                if (!src) return;
                 lastPlayed = src;
-                audio.src = src;
-                audio.load();
-                audio.play().catch(() => {
-                    // fallback to muted
-                    audio.muted = true;
-                    audio.play().catch(() => {});
-                });
+                try {
+                    audio.src = src;
+                    audio.load();
+                    audio.play().catch(() => {
+                        audio.muted = true;
+                        audio.play().catch(() => {});
+                    });
+                } catch (e) {
+                    console.warn('bg-audio: failed to play source', e);
+                }
             }
-
-            // Play next song when current ends
             audio.addEventListener('ended', playNextSong);
-
-            // Start with first song
-            playNextSong();
-
-            // On first user interaction, unmute and play
+            if (Array.isArray(songs) && songs.length > 0) playNextSong();
             function unlockAudio() {
                 try {
-                    audio.muted = false;
-                    audio.play();
+                    if (audio.src || (Array.isArray(songs) && songs.length > 0)) {
+                        audio.muted = false;
+                        audio.play().catch(() => {});
+                    }
                 } catch (e) {}
                 window.removeEventListener('click', unlockAudio);
                 window.removeEventListener('touchstart', unlockAudio);
@@ -1754,8 +1724,6 @@
             window.addEventListener('click', unlockAudio, { passive: true });
             window.addEventListener('touchstart', unlockAudio, { passive: true });
         })();
-
-        // Background video snippets: play random short clips at 2x speed (max 6s each)
         (function() {
             const clips = [
                 'https://tris.rocks/therace.mp4'
@@ -1775,8 +1743,6 @@
                 if (playTimeout) { clearTimeout(playTimeout); playTimeout = null; }
                 if (nextTimeout) { clearTimeout(nextTimeout); nextTimeout = null; }
             }
-
-            // Shuffle queue to ensure random order and no immediate repeats
             function shuffle(a) {
                 for (let i = a.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
@@ -1789,9 +1755,7 @@
             let lastPlayed = null;
             function refillQueue() {
                 queue = shuffle(clips.slice());
-                // avoid immediate repeat
                 if (lastPlayed && queue.length > 1 && queue[0] === lastPlayed) {
-                    // move first to end
                     queue.push(queue.shift());
                 }
             }
@@ -1801,13 +1765,10 @@
                 if (queue.length === 0) refillQueue();
                 const src = queue.shift();
                 lastPlayed = src;
-                // revoke previous blob URL
                 if (currentBlobUrl) {
                     try { URL.revokeObjectURL(currentBlobUrl); } catch (e) {}
                     currentBlobUrl = null;
                 }
-
-                // Try to fetch clip as a blob first (works around Safari download prompts)
                 fetch(src, { mode: 'cors' }).then(resp => {
                     if (!resp.ok) throw new Error('network');
                     return resp.blob();
@@ -1817,31 +1778,26 @@
                         video.src = currentBlobUrl;
                         video.load();
                     } catch (e) {
-                        // fallback to direct src
                         video.src = src;
                         video.load();
                     }
                 }).catch(() => {
-                    // network/blob fetch failed — fallback to assigning src directly
                     video.src = src;
                     video.load();
                 });
 
                 const handleMeta = function() {
-                    // duration may be NaN for streaming or unsupported types; guard
                     const dur = isFinite(video.duration) ? video.duration : 0;
-                    // We must skip the first 5 seconds and last 10 seconds.
-                    // Also ensure there's enough room to play the required video time at current playbackRate.
-                    const requiredWallMs = 20000; // 20s wall time
+
+                    const requiredWallMs = 20000;
                     const requiredVideoSeconds = video.playbackRate * (requiredWallMs / 1000);
-                    const earliestStart = 5; // skip first 5s
-                    const latestAllowedStart = dur - 10 - requiredVideoSeconds; // ensure skip last 10s
+                    const earliestStart = 5;
+                    const latestAllowedStart = dur - 10 - requiredVideoSeconds;
 
                     if (dur > 0 && latestAllowedStart >= earliestStart) {
                         const start = earliestStart + Math.random() * (latestAllowedStart - earliestStart);
                         try { video.currentTime = start; } catch (e) {}
                     } else {
-                        // Clip too short to satisfy constraints: schedule next
                         try { if (currentBlobUrl) { URL.revokeObjectURL(currentBlobUrl); currentBlobUrl = null; } } catch (e) {}
                         nextTimeout = setTimeout(playRandomSnippet, 300);
                     }
@@ -1849,17 +1805,12 @@
 
                 const handleSeeked = function() {
                     video.playbackRate = 2.0;
-                    // attempt to play muted (browsers allow muted autoplay)
                     video.play().catch(() => {});
-
-                    // Force play for full 20000ms (wall time)
                     const playMs = 20000;
 
                     playTimeout = setTimeout(() => {
                         try { video.pause(); } catch (e) {}
-                        // short gap before next snippet
                             const gap = 150 + Math.random() * 850;
-                            // schedule revoke of blob URL a little later to free memory
                             if (currentBlobUrl) {
                                 setTimeout(() => { try { URL.revokeObjectURL(currentBlobUrl); } catch (e) {} currentBlobUrl = null; }, 10000);
                             }
@@ -1868,7 +1819,6 @@
                 };
 
                 const handleError = function() {
-                    // try next clip shortly if this fails
                     if (currentBlobUrl) { try { URL.revokeObjectURL(currentBlobUrl); } catch (e) {} currentBlobUrl = null; }
                     nextTimeout = setTimeout(playRandomSnippet, 500 + Math.random() * 1000);
                 };
@@ -1880,7 +1830,6 @@
                 video.addEventListener('loadedmetadata', handleMeta, { once: true });
                 video.addEventListener('seeked', handleSeeked, { once: true });
                 video.addEventListener('error', handleError, { once: true });
-                // If the clip ends before our 6s window, immediately schedule next
                 video.addEventListener('ended', function onend() {
                     clearTimers();
                     if (currentBlobUrl) { try { URL.revokeObjectURL(currentBlobUrl); } catch (e) {} currentBlobUrl = null; }
@@ -1888,11 +1837,7 @@
                     video.removeEventListener('ended', onend);
                 });
             }
-
-            // Start muted autoplay; browsers typically allow muted playback
             playRandomSnippet();
-
-            // Optional: if user interacts, ensure video still muted/unmuted policy
             function unlock() {
                 try { video.muted = true; video.play(); } catch (e) {}
                 window.removeEventListener('click', unlock);
@@ -1901,13 +1846,9 @@
             window.addEventListener('click', unlock, { passive: true });
             window.addEventListener('touchstart', unlock, { passive: true });
         })();
-
-        // Swap sections on wheel/touch while allowing inner-section scrolling.
         (function() {
             const sections = Array.from(document.querySelectorAll('.section'));
             let current = 0;
-
-            // create page indicator dots on the left
             const dotsContainer = document.createElement('div');
             dotsContainer.id = 'page-dots';
             document.body.appendChild(dotsContainer);
@@ -1934,20 +1875,14 @@
                         s.classList.remove('visible');
                     }
                 });
-
-                // update page dots active state
                 if (dots && dots.length) {
                     dots.forEach((d, i) => d.classList.toggle('active', i === current));
                 }
-                // ensure the newly visible section is scrolled to its top and
-                // correctly aligned. Use rAF to wait for the class change to apply.
+
                 requestAnimationFrame(() => {
                     const cur = sections[current];
                     if (!cur) return;
-                    // reset scroll position so header/content is not clipped
                     try { cur.scrollTop = 0; } catch (e) {}
-
-                    // toggle alignment classes depending on whether it can scroll
                     const scrollable = cur.scrollHeight > cur.clientHeight + 2;
                     if (scrollable) {
                         cur.classList.remove('centered');
@@ -1958,8 +1893,6 @@
                     }
                 });
             }
-
-            // expose page-showing function globally so external controls can navigate
             window.showPage = show;
             show(0);
 
@@ -1977,16 +1910,12 @@
                 }
             }
 
-            // Wheel handler: always attach but detect whether the wheel should scroll
-            // the currently hovered section (if any). If the hovered/active section is
-            // scrollable and not at its edge, allow the browser to perform the scroll.
+
             window.addEventListener('wheel', (e) => {
-                // If a modal is visible, allow the modal to handle scrolling
                 const modal = document.getElementById('game-modal');
                 const modalVisible = modal && modal.classList.contains('visible');
-                if (modalVisible) return; // allow scrolling inside modal
+                if (modalVisible) return;
 
-                // prefer the section under the pointer, fall back to current
                 let elUnder = document.elementFromPoint(e.clientX, e.clientY);
                 let targetSec = null;
                 if (elUnder) targetSec = elUnder.closest && elUnder.closest('.section');
@@ -1996,13 +1925,9 @@
                     const atTop = targetSec.scrollTop <= 1;
                     const atBottom = (targetSec.scrollTop + targetSec.clientHeight) >= (targetSec.scrollHeight - 1);
 
-                    // If the section can scroll and the user isn't at its boundary,
-                    // allow the browser to scroll the section instead of changing pages.
                     if (e.deltaY > 0) {
-                        // scrolling down
                         if (targetSec.scrollHeight > targetSec.clientHeight && !atBottom) return;
                     } else if (e.deltaY < 0) {
-                        // scrolling up
                         if (targetSec.scrollHeight > targetSec.clientHeight && !atTop) return;
                     }
                 }
@@ -2010,8 +1935,6 @@
                 e.preventDefault();
                 go(e.deltaY);
             }, { passive: false });
-
-            // Touch support for swipe (enable on mobile and touch devices)
             let ts = 0;
             window.addEventListener('touchstart', (e) => { ts = e.touches[0].clientY; }, { passive: true });
             window.addEventListener('touchend', (e) => {
@@ -2025,11 +1948,9 @@
                     const atBottom = (curSec.scrollTop + curSec.clientHeight) >= (curSec.scrollHeight - 1);
 
                     if (diff > 0) {
-                        // swipe up -> next page: only if section is at bottom (or not scrollable)
                         if (curSec.scrollHeight > curSec.clientHeight && !atBottom) return;
                         go(diff);
                     } else {
-                        // swipe down -> previous page: only if section is at top (or not scrollable)
                         if (curSec.scrollHeight > curSec.clientHeight && !atTop) return;
                         go(diff);
                     }
@@ -2037,38 +1958,30 @@
                     go(diff);
                 }
             }, { passive: true });
-
-            // Keyboard arrows
             window.addEventListener('keydown', (e) => {
-                // allow arrow keys to scroll inside modal when it's open
                 const modal = document.getElementById('game-modal');
                 const modalVisible = modal && modal.classList.contains('visible');
                 const activeInModal = modal && modal.contains(document.activeElement);
 
                 if (modalVisible || activeInModal) {
-                    // let the browser handle arrow-key scrolling inside modal
                     return;
                 }
 
                 if (e.key === 'ArrowDown') { e.preventDefault(); go(1); }
                 if (e.key === 'ArrowUp') { e.preventDefault(); go(-1); }
             }, { passive: false });
-            
-            // Wire the modal "Get Features" button: navigate to first page, close popup,
-            // and highlight the script area/caret for 2s
+
             (function(){
                 const gf = document.getElementById('modal-get-features');
                 if (!gf) return;
                 gf.addEventListener('click', () => {
                     try { if (typeof window.showPage === 'function') window.showPage(0); } catch (e) {}
-                    // close the popup immediately
                     try { if (window.closeGameModal) window.closeGameModal(); } catch (e) {}
                     const codeEl = document.getElementById('code-holder') || document.querySelector('.code-holder');
                     const caret = document.querySelector('.bar');
                     const DURATION = 2000;
                     if (codeEl) {
                         codeEl.classList.add('script-glow');
-                        // highlight caret for the same 2s duration
                         try { if (caret) caret.classList.add('scriptbar-highlight'); } catch (e) {}
                         setTimeout(() => {
                             try { codeEl.classList.remove('script-glow'); } catch (e) {}
@@ -2078,8 +1991,6 @@
                 }, { passive: true });
             })();
         })();
-
-        // FAQ expand/collapse behavior (waits for transitionend before removing 'open')
         (function(){
             const items = Array.from(document.querySelectorAll('.faq-item'));
             if (!items.length) return;
@@ -2087,11 +1998,8 @@
             items.forEach(item => {
                 const btn = item.querySelector('.faq-question');
                 const answer = item.querySelector('.faq-answer');
-                // per-item close timeout handle so we can cancel accidental closures
                 let closeTimeoutHandle = null;
                 if (!btn || !answer) return;
-
-                // initialize collapsed
                 answer.style.maxHeight = '0px';
                 answer.style.opacity = '0';
 
@@ -2099,79 +2007,58 @@
                     const isOpen = item.classList.contains('open');
 
                     if (!isOpen) {
-                        // Close any other open FAQ items first
                         items.forEach(other => {
                             if (other === item) return;
                             if (!other.classList.contains('open')) return;
                             const otherBtn = other.querySelector('.faq-question');
                             const otherAnswer = other.querySelector('.faq-answer');
                             if (!otherAnswer) return;
-                            // collapse other answer
                             const curH = otherAnswer.scrollHeight;
                             otherAnswer.style.maxHeight = curH + 'px';
-                            // force reflow
                             void otherAnswer.offsetHeight;
                             otherAnswer.style.maxHeight = '0px';
                             otherAnswer.style.opacity = '0';
                             if (otherBtn) otherBtn.setAttribute('aria-expanded', 'false');
                             otherAnswer.setAttribute('aria-hidden', 'true');
-                            // remove open class after same timeout used elsewhere
                             setTimeout(() => {
                                 other.classList.remove('open');
                                 otherAnswer.style.maxHeight = '';
                             }, 360);
                         });
-
-                        // If a close timeout was pending for this item, cancel it — user explicitly reopened
                         if (closeTimeoutHandle) { clearTimeout(closeTimeoutHandle); closeTimeoutHandle = null; }
-                        // OPEN this item
                         item.classList.add('open');
                         btn.setAttribute('aria-expanded', 'true');
                         answer.setAttribute('aria-hidden', 'false');
-
-                        // measure and animate to that height
                         const h = answer.scrollHeight;
                         answer.style.maxHeight = h + 'px';
-                        // allow opacity to fade in slightly after starting
                         requestAnimationFrame(() => { answer.style.opacity = '1'; });
-
-                        // cleanup after animation so content can reflow naturally
                         const onEnd = (e) => {
                             if (e.propertyName === 'max-height') {
-                                // Keep the answer fully expanded after the transition
-                                // by allowing unlimited max-height (so content can grow naturally).
+
                                 answer.style.maxHeight = 'none';
                                 answer.removeEventListener('transitionend', onEnd);
                             }
                         };
                         answer.addEventListener('transitionend', onEnd);
                     } else {
-                        // CLOSE: set explicit height then collapse to 0
                         const cur = answer.scrollHeight;
                         answer.style.maxHeight = cur + 'px';
-                        // force reflow so the transition occurs
                         void answer.offsetHeight;
-                        // start collapse
                         answer.style.maxHeight = '0px';
                         answer.style.opacity = '0';
                         btn.setAttribute('aria-expanded', 'false');
                         answer.setAttribute('aria-hidden', 'true');
 
-                        // Close: remove the 'open' class after the CSS transition completes.
-                        // Use a timeout matching the CSS duration to avoid relying on transitionend.
                         if (closeTimeoutHandle) { clearTimeout(closeTimeoutHandle); closeTimeoutHandle = null; }
                         closeTimeoutHandle = setTimeout(() => {
                             item.classList.remove('open');
-                            // allow reflow cleanup
                             answer.style.maxHeight = '';
                             closeTimeoutHandle = null;
-                        }, 360); // slightly longer than CSS max-height 300ms to ensure completion
+                        }, 360);
                     }
                 });
             });
         })();
-
-        // Language switcher: menu-based selection; supports multiple languages
         (function(){
             const SUPPORTED = ['en','es','fr','de','pt','ru'];
             const NAMES = { en: 'English', es: 'Español', fr: 'Français', de: 'Deutsch', pt: 'Português', ru: 'Русский' };
@@ -2225,7 +2112,6 @@
                     games_note: `и работает <span class="squiggle">везде</span>`
                 }
             };
-            // default other languages to English strings if not provided
             for (const code of SUPPORTED) { if (!translations[code]) translations[code] = Object.assign({}, translations['en']); }
 
             function setLanguage(lang){
@@ -2235,7 +2121,6 @@
                     if (!key) return;
                     const txt = translations[lang] && translations[lang][key];
                     if (typeof txt !== 'undefined') {
-                        // allow HTML in translations (e.g., <span class="squiggle">...)</span>)
                         el.innerHTML = txt;
                     }
                 });
@@ -2274,7 +2159,6 @@
                 setLanguage(start);
                 const btn = document.getElementById('lang-btn');
                 if (btn) btn.addEventListener('click', (e) => { const menu = document.getElementById('lang-menu'); if (menu && menu.style.display === 'block') hideMenu(); else showMenu(); });
-                // close menu when clicking outside
                 document.addEventListener('click', (e) => {
                     const menu = document.getElementById('lang-menu');
                     const btn = document.getElementById('lang-btn');
@@ -2289,3 +2173,4 @@
 
 </body>
 </html>
+
