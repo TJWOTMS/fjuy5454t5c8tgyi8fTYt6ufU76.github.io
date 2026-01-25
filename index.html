@@ -173,7 +173,7 @@
             transform: translateY(-2px) scale(1.02);
         }
 
-        /* temporary glow applied when user requests features (10s) */
+        /* temporary glow applied when features are requested (10s) */
         .code-holder.script-glow {
             animation: scriptGlow 1000ms ease-in-out infinite alternate;
             border-color: rgba(118,0,244,0.95) !important;
@@ -249,8 +249,6 @@
 
         /* WebKit browsers: hide the scrollbar track/thumb for sections */
         .section::-webkit-scrollbar { width: 0; height: 0; }
-            background: transparent;
-        }
 
         /* Page indicator dots (left side) */
         #page-dots {
@@ -259,7 +257,7 @@
             top: 50%;
             transform: translateY(-50%);
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             gap: 12px;
             z-index: 1200;
             -webkit-tap-highlight-color: transparent;
@@ -379,13 +377,14 @@
             font-weight: 700;
             display: inline-block;
             will-change: transform, opacity;
-            transition: transform 260ms cubic-bezier(.2,.9,.2,1), opacity 260ms ease, font-size 220ms ease;
+            transition: transform 260ms cubic-bezier(.2,.9,.2,1), opacity 260ms ease, font-size 220ms ease, text-shadow 260ms ease;
             text-align: center;
             /* let the text size dictate width so it stays centered under the heading */
             min-width: 0;
             width: auto;
             /* subtle persistent glow for the game name */
             text-shadow: 0 0 12px rgba(118,0,244,0.75), 0 0 30px rgba(118,0,244,0.18);
+            will-change: transform, opacity, text-shadow;
         }
 
         @keyframes subtitleIn {
@@ -398,11 +397,16 @@
         }
 
         @keyframes gameCycle {
-            0%   { opacity: 0; transform: translateY(8px) scale(.98); }
-            15%  { opacity: 1; transform: translateY(0) scale(1); }
-            80%  { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-8px) scale(.98); }
+                    0%   { opacity: 0; transform: translateY(10px) scale(.96); text-shadow: 0 0 6px rgba(118,0,244,0.35); }
+                    12%  { opacity: 1; transform: translateY(0) scale(1.02); text-shadow: 0 0 18px rgba(118,0,244,0.95), 0 0 44px rgba(118,0,244,0.26); }
+                    65%  { opacity: 1; transform: translateY(0) scale(1.02); text-shadow: 0 0 18px rgba(118,0,244,0.95), 0 0 44px rgba(118,0,244,0.26); }
+                    100% { opacity: 0; transform: translateY(-10px) scale(.96); text-shadow: 0 0 6px rgba(118,0,244,0.35); }
         }
+
+                /* Respect user preference to reduce motion */
+                @media (prefers-reduced-motion: reduce) {
+                    .subtitle, .subtitle-game { animation: none !important; transition: none !important; }
+                }
 
         @keyframes squiggleMove {
             from { background-position: 0 0; }
@@ -617,8 +621,7 @@
             border: 1px solid rgba(255,255,255,0.06);
         }
         .card-status img { display: block; width: 24px; height: 24px; }
-        .card-status.updated { /* semantic class kept for aria/title only */ }
-        .card-status.outdated { /* semantic class kept for aria/title only */ }
+        /* semantic classes for card-status exist for ARIA/title but need no CSS rules */
 
         @media (max-width: 700px) {
             .games-list { gap: 12px; justify-content: space-between; }
@@ -883,32 +886,67 @@
             position: absolute; right: 18px; bottom: 18px; display: flex; gap: 8px; align-items: center; z-index: 6;
         }
         .modal-get-features {
-            padding: 10px 12px; background: transparent; border: 1px solid rgba(118,0,244,0.14); color: #fff; cursor: pointer; font-weight:700; display:inline-flex; gap:8px; align-items:center; min-height:40px;
+            padding: 10px 14px; background: transparent; border: 1px solid rgba(118,0,244,0.14); color: #fff; cursor: pointer; font-weight:700; display:inline-flex; gap:8px; align-items:center; transition: transform 160ms cubic-bezier(.2,.9,.2,1), box-shadow 160ms ease;
         }
         .modal-get-features:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(118,0,244,0.10); }
 
-        /* When placed inside .modal-actions, ensure Join is static and both controls match size */
+        /* When placed inside .modal-actions, ensure both actions are static and aligned
+           Make `Get Features` match `Join` exactly to avoid vertical offset differences */
         .modal-actions .modal-join,
         .modal-actions .modal-get-features {
             position: static !important;
             right: auto !important;
             bottom: auto !important;
-            min-height: 40px;
-            padding-top: 10px; padding-bottom: 10px;
-            align-self: center;
+            display: inline-flex !important;
+            align-items: center !important;
+            align-self: center !important;
+            vertical-align: middle !important;
+            padding: 10px 14px !important;
+            font-size: 0.95rem !important;
+            line-height: 1 !important;
+            height: auto !important;
+            margin: 0 !important;
         }
-
-        .modal-actions .modal-join { display: inline-flex; gap:8px; align-items:center; }
+        .modal-actions .modal-join:hover,
+        .modal-actions .modal-get-features:hover { transform: translateY(-2px) !important; }
 
         /* Leave room for the action buttons so features list won't overlap them on small screens */
         #modal-features { padding-bottom: 96px; }
 
         /* On narrow screens stack actions under the features list and center them */
         @media (max-width: 720px) {
-            .modal-actions { position: static; justify-content: center; margin-top: 10px; bottom: auto; right: auto; }
-            #modal-features { padding-bottom: 24px; }
+            /* Keep actions in-flow on mobile to preserve modal sizing.
+               Use margin and bottom padding to position them visually lower
+               without shrinking the modal content area. */
+            .modal-actions {
+                position: static;
+                justify-content: center;
+                margin-top: 18px;
+                right: auto;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 10px 12px;
+                gap: 12px;
+                align-items: center;
+                z-index: 8;
+                background: transparent;
+            }
+            /* Ensure features area leaves room for the actions without forcing
+               the modal to shrink. */
+            #modal-features { padding-bottom: 96px; }
             .modal-actions .modal-join,
-            .modal-actions .modal-get-features { width: auto; }
+            .modal-actions .modal-get-features {
+                position: static !important;
+                right: auto !important;
+                bottom: auto !important;
+                flex: 0 0 auto;
+                min-width: 0;
+                display: inline-flex;
+                align-items: center;
+                align-self: center;
+                vertical-align: middle;
+            }
+            .modal-actions .modal-get-features { justify-content: center; }
         }
 
         @media (max-width: 720px) {
@@ -919,22 +957,43 @@
             .modal-feature-section { flex: 1 1 100%; }
         }
         /* FAQ page styles */
-        .faq-title { font-size: 1.8rem; color: #fff; text-transform: lowercase; line-height: 1.05; }
+        .faq-title { font-size: 3.2rem; color: #fff; text-transform: lowercase !important; line-height: 1.02; margin-bottom: 6px; }
+        .faq-subnote {
+            color: #bfbfbf;
+            font-size: 1.3rem;
+            margin-top: 6px;
+            text-transform: none;
+            text-align: center;
+        }
+        .glow-discord {
+            color: #7600f4;
+            font-weight: 900;
+            font-size: 1.18rem;
+            text-shadow: 0 0 12px rgba(118,0,244,0.98), 0 0 36px rgba(118,0,244,0.24);
+            transition: text-shadow 180ms ease, transform 180ms ease;
+        }
         .faq-frame { width: 100%; display: flex; align-items: center; justify-content: center; position: relative; flex-direction: column; gap: 12px; }
         .faq-list { width: min(920px, 86%); color: #bfbfbf; display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
         .faq-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(118,0,244,0.08); padding: 0; border-radius: 4px; overflow: hidden; }
-        .faq-question { color: #fff; font-weight: 700; width: 100%; text-align: left; background: transparent; border: 0; padding: 14px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; cursor: pointer; font-family: inherit; font-size: 1rem; }
+        .faq-question { color: #fff; font-weight: 700; width: 100%; text-align: left; background: transparent; border: 0; padding: 14px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; cursor: pointer; font-family: inherit; font-size: 1.15rem; }
         .faq-question:focus { outline: none; box-shadow: 0 6px 24px rgba(118,0,244,0.12); }
         .faq-q-text { flex: 1 1 auto; text-align: left; }
         .faq-arrow { flex: 0 0 20px; display:inline-block; transform-origin: 50% 50%; transition: transform 260ms cubic-bezier(.2,.9,.2,1); color: #bfbfbf; }
-        .faq-answer { color: #bfbfbf; padding: 0 16px; font-size: 0.95rem; line-height: 1.4; max-height: 0; overflow: hidden; opacity: 0; transition: max-height 300ms ease, opacity 220ms ease, padding 200ms ease; }
+        .faq-answer { color: #bfbfbf; padding: 0 16px; font-size: 1.05rem; line-height: 1.5; max-height: 0; overflow: hidden; opacity: 0; transition: max-height 300ms ease, opacity 220ms ease, padding 200ms ease; }
         .faq-item.open .faq-answer { opacity: 1; }
         .faq-item.open .faq-arrow { transform: rotate(90deg); color: #fff; }
         @media (max-width: 1024px) { .faq-list { width: 92%; } }
         @media (max-width: 720px) {
             .faq-list { width: 92%; }
-            .faq-title { font-size: 1.15rem; }
+            .faq-title { font-size: 1.7rem; line-height: 1.08; text-align: center; margin-bottom: 8px; }
+            .faq-subnote { font-size: 1.02rem; margin-top: 4px; }
+            .faq-question { font-size: 1.05rem; line-height: 1.4; }
+            .faq-answer { font-size: 1rem; line-height: 1.6; }
+            .section#esp { padding-top: 100px; }
         }
+
+        /* Move the entire FAQ section content lower on desktop */
+        .section#esp { padding-top: 200px; }
           /* Force zero rounding and remove shadows/filters across UI to ensure
               a flat clean base. */
           *, *::before, *::after { border-radius: 0 !important; box-shadow: none !important; text-shadow: none !important; filter: none !important; }
@@ -957,6 +1016,10 @@
         .tris {
             text-shadow: 0 0 14px rgba(118,0,244,0.75) !important;
             animation: trisGlow 2400ms ease-in-out infinite alternate !important;
+        }
+        /* Re-enable discord glow explicitly (global reset disables text-shadow). */
+        .glow-discord {
+            text-shadow: 0 0 12px rgba(118,0,244,0.98) !important, 0 0 36px rgba(118,0,244,0.24) !important;
         }
         /* FAQ glass — cleaner frosted glass look (inspired by modern iOS glass)
            Keep corners square per project requirement while using backdrop blur
@@ -999,7 +1062,7 @@
             <span id="text"></span><span class="bar"></span>
             <!-- Subtitle that cycles game names (moved inside header to sit directly below) -->
             <div id="subtitle" class="subtitle" aria-hidden="false">
-                <span class="subtitle-prefix">for</span>
+                <span class="subtitle-prefix" data-i18n="for">for</span>
                 <span id="gameName" class="tris subtitle-game">Jujutsu Shenanigans</span>
             </div>
         </h1>
@@ -1008,69 +1071,70 @@
 
         <div id="code-holder" class="code-holder">
             <pre><code id="code-text">loadstring(game:HttpGet("https://tris.rocks/loader.lua"))();</code></pre>
-            <button class="copy-btn" id="copy-btn" onclick="copyCode()">Copy</button>
+            <button class="copy-btn" id="copy-btn" data-i18n="copy" onclick="copyCode()">Copy</button>
         </div>
 
-        <!-- ICON LINKS removed from hero (moved to fixed footer) -->
+        <!-- ICON LINKS: footer contains social/action links -->
     </div>
 
     <!-- Top-right quick actions -->
     <div id="top-right-buttons" aria-hidden="false">
         <a href="#information" class="top-btn" role="button" aria-label="Information">
             <i class="fa-solid fa-book" aria-hidden="true"></i>
-            <span class="btn-text">Information</span>
+            <span class="btn-text" data-i18n="info">Information</span>
         </a>
         <a href="#key-system" class="top-btn glow" role="button" aria-label="Key System">
             <i class="fa-solid fa-key" aria-hidden="true"></i>
-            <span class="btn-text">Key System</span>
+            <span class="btn-text" data-i18n="key_system">Key System</span>
         </a>
     </div>
 
-    <!-- content section removed per user request -->
+    <!-- main content intentionally omitted -->
 
     <div class="section" id="games">
-        <h2 class="content-header">Supported Games</h2>
+        <h2 class="content-header" data-i18n="supported_games">Supported Games</h2>
         <div class="games-section" id="games-section" aria-live="polite">
             <div class="games-list" id="games-list" role="list" aria-label="Supported games">Loading...</div>
-            <div class="games-note" aria-hidden="true">and works <span class="squiggle">universally</span></div>
+            <div class="games-note" data-i18n="games_note" aria-hidden="true">and works <span class="squiggle">universally</span></div>
         </div>
     </div>
 
     <div class="section" id="esp">
-        <h2 class="content-header faq-title">FAQ</h2>
+        <h2 class="content-header faq-title">Frequently Asked Questions</h2>
+        <p class="faq-subnote">more in our <span class="glow-discord" style="color:#7600f4; font-weight:900; text-shadow:0 0 12px rgba(118,0,244,0.98) !important, 0 0 36px rgba(118,0,244,0.24) !important;">discord</span> server</p>
         <div class="games-section" aria-live="polite">
             <div class="faq-frame">
                 <div class="faq-list" role="list">
                     <div class="faq-item" role="listitem">
                         <button class="faq-question" aria-expanded="false">
-                            <span class="faq-q-text">How do I get a key?</span>
+                            <span class="faq-q-text" data-i18n="faq_q_get_key">How do I get a key?</span>
                             <span class="faq-arrow" aria-hidden="true">▸</span>
                         </button>
-                        <div class="faq-answer" aria-hidden="true">You can get a key by copying the key system link from the loader, or by pressing the "Key System" button in the top-right.</div>
+                        <div class="faq-answer" data-i18n="faq_a_get_key" aria-hidden="true">You can get a key by copying the key system link from the loader, or by pressing the "Key System" button in the top-right.</div>
                     </div>
 
                     <div class="faq-item" role="listitem">
                         <button class="faq-question" aria-expanded="false">
-                            <span class="faq-q-text">How can I report bugs?</span>
+                            <span class="faq-q-text" data-i18n="faq_q_report_bugs">How can I report bugs?</span>
                             <span class="faq-arrow" aria-hidden="true">▸</span>
                         </button>
-                        <div class="faq-answer" aria-hidden="true">You can report bugs or issues through our Discord server.</div>
+                        <div class="faq-answer" data-i18n="faq_a_report_bugs" aria-hidden="true">You can report bugs or issues through our Discord server.</div>
                     </div>
 
                     <div class="faq-item" role="listitem">
                         <button class="faq-question" aria-expanded="false">
-                            <span class="faq-q-text">Does this script work on mobile?</span>
+                            <span class="faq-q-text" data-i18n="faq_q_mobile">Does this script work on mobile?</span>
                             <span class="faq-arrow" aria-hidden="true">▸</span>
                         </button>
-                        <div class="faq-answer" aria-hidden="true">Yes — this script has been tested on mobile and has great functionality.</div>
+                        <div class="faq-answer" data-i18n="faq_a_mobile" aria-hidden="true">Yes — this script has been tested on mobile and has great functionality.</div>
                     </div>
 
                     <div class="faq-item" role="listitem">
                         <button class="faq-question" aria-expanded="false">
-                            <span class="faq-q-text">Does this script work on most executors?</span>
+                            <span class="faq-q-text" data-i18n="faq_q_executors">Does this script work on most executors?</span>
                             <span class="faq-arrow" aria-hidden="true">▸</span>
                         </button>
-                        <div class="faq-answer" aria-hidden="true">You can find out yourself — it has been tested on executors such as Seliware, Potassium, and Delta.</div>
+                        <div class="faq-answer" data-i18n="faq_a_executors" aria-hidden="true">You can find out yourself — it has been tested on executors such as Seliware, Potassium, and Delta.</div>
                     </div>
                 </div>
             </div>
@@ -1078,7 +1142,7 @@
     </div>
 
     <div class="section" id="developers">
-        <h2 class="content-header">our developers</h2>
+        <h2 class="content-header" data-i18n="our_developers">our developers</h2>
         <div class="games-section" aria-live="polite">
             <div class="dev-cards" role="list">
                 <div class="dev-card" role="listitem" aria-label="worldwide">
@@ -1106,7 +1170,26 @@
                 <i class="fa-brands fa-youtube"></i>
             </a>
         </div>
+        <button id="lang-btn" class="icon-button lang-button" aria-label="Change language" title="Change language">
+            <i class="fa-solid fa-globe" aria-hidden="true"></i>
+            <span id="lang-label">EN</span>
+        </button>
+        <div id="lang-menu" role="menu" aria-hidden="true"></div>
     </div>
+
+    <style id="lang-footer-style">
+        .fixed-footer { position: fixed; left: 0; right: 0; bottom: 0; }
+        .fixed-footer .bottom-buttons { position: relative; display:flex; justify-content:center; gap:20px; }
+        .fixed-footer .lang-button { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); display:inline-flex; gap:8px; align-items:center; padding:6px 8px; background: transparent; border: 1px solid rgba(255,255,255,0.03); }
+        .fixed-footer .lang-button i { color: #ffffff; font-size: 1.1rem; }
+        .fixed-footer #lang-label { margin-left:6px; color:#d9d2ff; font-weight:700; font-size:0.95rem; }
+        .fixed-footer #lang-menu { position: absolute; left: 18px; bottom: calc(100% + 8px); display:none; background: rgba(18,18,18,0.95); border:1px solid rgba(118,0,244,0.08); padding:6px; border-radius:6px; min-width:140px; }
+        .fixed-footer #lang-menu button { display:flex; gap:8px; align-items:center; width:100%; padding:8px 6px; background:transparent; border:0; color:#eae6ff; cursor:pointer; text-align:left; }
+        .fixed-footer #lang-menu button:hover { background: rgba(118,0,244,0.06); }
+        .fixed-footer #lang-menu .lang-code { font-weight:900; width:36px; }
+        @media (max-width:560px) { .fixed-footer #lang-label { display:none; } }
+    </style>
+
         <!-- Game details modal (hidden until opened) -->
         <div id="game-modal" class="game-modal" aria-hidden="true">
                 <div class="modal-backdrop" data-close></div>
@@ -1120,11 +1203,11 @@
                     </div>
                     <div id="modal-features" class="modal-features" aria-live="polite"></div>
                     <div class="modal-actions">
-                        <button id="modal-get-features" class="modal-get-features" aria-label="Get Features">
+                        <button id="modal-get-features" class="modal-get-features" data-i18n="get_features" aria-label="Get Features">
                             <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-                            <span class="btn-text">Get Features</span>
+                            <span class="btn-text" data-i18n="get_features">Get Features</span>
                         </button>
-                        <a id="modal-join" class="modal-join" target="_blank" rel="noopener">Join</a>
+                        <a id="modal-join" class="modal-join" data-i18n="join" target="_blank" rel="noopener">Join</a>
                     </div>
                 </div>
             </div>
@@ -1137,25 +1220,7 @@
     <canvas id="bg-dots" aria-hidden="true"></canvas>
 
     <script>
-        // Load lucide (icons) and replace placeholders with SVGs. If lucide fails,
-        // the page will still work and buttons will show text labels.
-        (function loadLucide() {
-            try {
-                const script = document.createElement('script');
-                script.src = 'https://unpkg.com/lucide@latest/dist/lucide.min.js';
-                script.async = true;
-                script.onload = function() {
-                    try {
-                        if (window.lucide && typeof window.lucide.createIcons === 'function') {
-                            window.lucide.createIcons();
-                        }
-                    } catch (e) { /* ignore */ }
-                };
-                document.head.appendChild(script);
-                // re-run replacement when viewport changes (icons appear/disappear)
-                window.addEventListener('resize', () => { try { window.lucide && window.lucide.createIcons && window.lucide.createIcons(); } catch (e) {} }, { passive: true });
-            } catch (e) {}
-        })();
+        // Load icons dynamically when available; fall back to inline SVGs or text labels.
         // Interactive purple dot background
         (function() {
             const canvas = document.getElementById('bg-dots');
@@ -1464,9 +1529,9 @@
                     // force reflow
                     void el.offsetWidth;
                     // clear any previous inline animation then explicitly apply the gameCycle
-                    el.style.animation = 'none';
+                    el.style.setProperty('animation', 'none', 'important');
                     void el.offsetWidth;
-                    el.style.animation = 'gameCycle 2400ms cubic-bezier(.2,.9,.2,1) both';
+                    el.style.setProperty('animation', 'gameCycle 2400ms cubic-bezier(.2,.9,.2,1) both', 'important');
                     idx = (idx + 1) % names.length;
                 }
 
@@ -2105,6 +2170,121 @@
                 });
             });
         })();
+
+        // Language switcher: menu-based selection; supports multiple languages
+        (function(){
+            const SUPPORTED = ['en','es','fr','de','pt','ru'];
+            const NAMES = { en: 'English', es: 'Español', fr: 'Français', de: 'Deutsch', pt: 'Português', ru: 'Русский' };
+            const translations = {
+                en: {
+                    copy: 'Copy', join: 'Join', get_features: 'Get Features', info: 'Information', key_system: 'Key System', for: 'for', supported_games: 'Supported Games', faq: 'FAQ', our_developers: 'our developers',
+                    faq_q_get_key: 'How do I get a key?', faq_a_get_key: 'You can get a key by copying the key system link from the loader, or by pressing the "Key System" button in the top-right.',
+                    faq_q_report_bugs: 'How can I report bugs?', faq_a_report_bugs: 'You can report bugs or issues through our <span class="glow-discord">discord</span> server.',
+                    faq_q_mobile: 'Does this script work on mobile?', faq_a_mobile: 'Yes — this script has been tested on mobile and has great functionality.',
+                    faq_q_executors: 'Does this script work on most executors?', faq_a_executors: 'You can find out yourself — it has been tested on executors such as Seliware, Potassium, and Delta.',
+                    games_note: `and works <span class="squiggle">universally</span>`
+                },
+                es: {
+                    copy: 'Copiar', join: 'Unirse', get_features: 'Obtener funciones', info: 'Información', key_system: 'Sistema de claves', for: 'para', supported_games: 'Juegos compatibles', faq: 'Preguntas frecuentes', our_developers: 'nuestros desarrolladores',
+                    faq_q_get_key: '¿Cómo obtengo una clave?', faq_a_get_key: 'Puedes obtener una clave copiando el enlace del sistema de claves desde el loader, o presionando el botón "Key System" en la parte superior derecha.',
+                    faq_q_report_bugs: '¿Cómo puedo reportar errores?', faq_a_report_bugs: 'Puedes reportar errores o problemas a través de nuestro servidor de <span class="glow-discord">discord</span>.',
+                    faq_q_mobile: '¿Este script funciona en móvil?', faq_a_mobile: 'Sí — este script ha sido probado en móvil y funciona correctamente.',
+                    faq_q_executors: '¿Este script funciona en la mayoría de los ejecutores?', faq_a_executors: 'Puedes comprobarlo tú mismo — ha sido probado en ejecutores como Seliware, Potassium y Delta.',
+                    games_note: `y funciona <span class="squiggle">universalmente</span>`
+                },
+                fr: {
+                    copy: 'Copier', join: 'Rejoindre', get_features: 'Voir fonctionnalités', info: 'Informations', key_system: 'Système de clés', for: 'pour', supported_games: 'Jeux pris en charge', faq: 'Questions fréquemment posées', our_developers: 'nos développeurs',
+                    faq_q_get_key: 'Comment obtenir une clé ?', faq_a_get_key: 'Vous pouvez obtenir une clé en copiant le lien du système de clés depuis le loader, ou en appuyant sur le bouton "Key System" en haut à droite.',
+                    faq_q_report_bugs: 'Comment signaler des bugs ?', faq_a_report_bugs: 'Vous pouvez signaler des bugs ou problèmes via notre serveur <span class="glow-discord">discord</span>.',
+                    faq_q_mobile: 'Ce script fonctionne-t-il sur mobile ?', faq_a_mobile: 'Oui — ce script a été testé sur mobile et fonctionne correctement.',
+                    faq_q_executors: 'Ce script fonctionne-t-il sur la plupart des executors ?', faq_a_executors: 'Vous pouvez le vérifier vous-même — il a été testé sur des executors tels que Seliware, Potassium et Delta.',
+                    games_note: `et fonctionne <span class="squiggle">partout</span>`
+                },
+                de: {
+                    copy: 'Kopieren', join: 'Beitreten', get_features: 'Funktionen anzeigen', info: 'Information', key_system: 'Schlüsselsystem', for: 'für', supported_games: 'Unterstützte Spiele', faq: 'Häufig gestellte Fragen', our_developers: 'unsere Entwickler',
+                    faq_q_get_key: 'Wie bekomme ich einen Schlüssel?', faq_a_get_key: 'Sie können einen Schlüssel erhalten, indem Sie den Link des Schlüsselsystems aus dem Loader kopieren oder auf die Schaltfläche "Key System" oben rechts klicken.',
+                    faq_q_report_bugs: 'Wie kann ich Fehler melden?', faq_a_report_bugs: 'Sie können Fehler oder Probleme über unseren <span class="glow-discord">discord</span>-Server melden.',
+                    faq_q_mobile: 'Funktioniert dieses Skript auf Mobilgeräten?', faq_a_mobile: 'Ja — dieses Skript wurde auf Mobilgeräten getestet und funktioniert gut.',
+                    faq_q_executors: 'Funktioniert dieses Skript mit den meisten Executor-Programmen?', faq_a_executors: 'Sie können es selbst ausprobieren — es wurde auf Executor-Programmen wie Seliware, Potassium und Delta getestet.',
+                    games_note: `und funktioniert <span class="squiggle">weltweit</span>`
+                },
+                pt: {
+                    copy: 'Copiar', join: 'Entrar', get_features: 'Obter recursos', info: 'Informação', key_system: 'Sistema de chaves', for: 'para', supported_games: 'Jogos suportados', faq: 'Perguntas Frequentes', our_developers: 'nossos desenvolvedores',
+                    faq_q_get_key: 'Como obtenho uma chave?', faq_a_get_key: 'Você pode obter uma chave copiando o link do sistema de chaves do loader, ou pressionando o botão "Key System" no canto superior direito.',
+                    faq_q_report_bugs: 'Como posso reportar bugs?', faq_a_report_bugs: 'Você pode reportar bugs ou problemas através do nosso servidor do <span class="glow-discord">discord</span>.',
+                    faq_q_mobile: 'Este script funciona em dispositivos móveis?', faq_a_mobile: 'Sim — este script foi testado em dispositivos móveis e funciona bem.',
+                    faq_q_executors: 'Este script funciona na maioria dos executores?', faq_a_executors: 'Você pode verificar por si mesmo — ele foi testado em executores como Seliware, Potassium e Delta.',
+                    games_note: `e funciona <span class="squiggle">universalmente</span>`
+                },
+                ru: {
+                    copy: 'Копировать', join: 'Присоединиться', get_features: 'Получить функции', info: 'Информация', key_system: 'Система ключей', for: 'для', supported_games: 'Поддерживаемые игры', faq: 'Часто задаваемые вопросы', our_developers: 'наши разработчики',
+                    faq_q_get_key: 'Как получить ключ?', faq_a_get_key: 'Вы можете получить ключ, скопировав ссылку системы ключей из загрузчика или нажав кнопку "Key System" в правом верхнем углу.',
+                    faq_q_report_bugs: 'Как я могу сообщить об ошибках?', faq_a_report_bugs: 'Вы можете сообщить об ошибках или проблемах через наш сервер <span class="glow-discord">discord</span>.',
+                    faq_q_mobile: 'Работает ли этот скрипт на мобильных устройствах?', faq_a_mobile: 'Да — этот скрипт был протестирован на мобильных устройствах и работает хорошо.',
+                    faq_q_executors: 'Работает ли этот скрипт на большинстве исполнителей (executors)?', faq_a_executors: 'Вы можете проверить сами — он был протестирован на исполнителях, таких как Seliware, Potassium и Delta.',
+                    games_note: `и работает <span class="squiggle">везде</span>`
+                }
+            };
+            // default other languages to English strings if not provided
+            for (const code of SUPPORTED) { if (!translations[code]) translations[code] = Object.assign({}, translations['en']); }
+
+            function setLanguage(lang){
+                if (!translations[lang]) lang = 'en';
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (!key) return;
+                    const txt = translations[lang] && translations[lang][key];
+                    if (typeof txt !== 'undefined') {
+                        // allow HTML in translations (e.g., <span class="squiggle">...)</span>)
+                        el.innerHTML = txt;
+                    }
+                });
+                const label = document.getElementById('lang-label');
+                if (label) label.textContent = (lang || 'en').toUpperCase();
+                try { localStorage.setItem('siteLang', lang); } catch(e) {}
+                window.siteLang = lang;
+            }
+
+            function pickStartLang(){
+                try { const s = localStorage.getItem('siteLang'); if (s && SUPPORTED.includes(s)) return s; } catch(e) {}
+                const nav = (navigator.language || navigator.userLanguage || 'en').slice(0,2);
+                return SUPPORTED.includes(nav) ? nav : 'en';
+            }
+
+            function buildMenu(){
+                const menu = document.getElementById('lang-menu');
+                if (!menu) return;
+                menu.innerHTML = '';
+                for (const code of SUPPORTED) {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.setAttribute('data-lang', code);
+                    btn.innerHTML = `<span class="lang-code">${code.toUpperCase()}</span><span class="lang-name">${NAMES[code] || code}</span>`;
+                    btn.addEventListener('click', (e) => { setLanguage(code); hideMenu(); });
+                    menu.appendChild(btn);
+                }
+            }
+
+            function showMenu(){ const m = document.getElementById('lang-menu'); if (m) { m.style.display = 'block'; m.setAttribute('aria-hidden','false'); } }
+            function hideMenu(){ const m = document.getElementById('lang-menu'); if (m) { m.style.display = 'none'; m.setAttribute('aria-hidden','true'); } }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                buildMenu();
+                const start = pickStartLang();
+                setLanguage(start);
+                const btn = document.getElementById('lang-btn');
+                if (btn) btn.addEventListener('click', (e) => { const menu = document.getElementById('lang-menu'); if (menu && menu.style.display === 'block') hideMenu(); else showMenu(); });
+                // close menu when clicking outside
+                document.addEventListener('click', (e) => {
+                    const menu = document.getElementById('lang-menu');
+                    const btn = document.getElementById('lang-btn');
+                    if (!menu || !btn) return;
+                    if (menu.contains(e.target) || btn.contains(e.target)) return;
+                    hideMenu();
+                });
+            });
+        })();
+
     </script>
 
 </body>
